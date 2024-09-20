@@ -5,7 +5,7 @@ class Dice{
         this.dice_elements= dice_elements; //array of images//
         this.photo_names=["blank", "one", "two", "three", "four", "five", "six"]
 
-        this.dice_values = []
+        this.dice_values = [0,0,0,0,0]
     }
 
     /**
@@ -62,19 +62,13 @@ class Dice{
     */
     roll(){
         if (this.rolls_remaining_element > 0){
+            let randomValues = []
             for (let i=0; i<5; i++){
-                if (this.dice_values[i] != 0){
-                    console.log(this.dice_elements[i])
-                    console.log(this.dice_elements[i].classList)
-                    if (Array.from(this.dice_elements[i].classList).includes("reserved") === false){
-                        this.dice_values[i]=(Math.floor((Math.random()*6)+1));
-                    }
-                } else {
-                    this.dice_values.push(Math.floor((Math.random()*6)+1));
-                }
+                randomValues.push(Math.floor((Math.random()*6)+1));
             }
+            this.rolls_remaining_element -= 1
+            this.set(randomValues, this.rolls_remaining_element)
         }
-        this.rolls_remaining_element = this.rolls_remaining_element -1
         return this.dice_values
     } //start with array of five 0's. when roll, add value to it. if reserved, dont change value. if not reserved, set equal to 0 THEN add values
 
@@ -84,7 +78,7 @@ class Dice{
      * <br> Uses this.#setDice to update dice
     */
     reset(){
-
+        this.set([0,0,0,0,0], 3);
     }
 
     /**
@@ -110,7 +104,14 @@ class Dice{
      *
     */
     set(new_dice_values, new_rolls_remaining){
-
+        this.rolls_remaining_element = new_rolls_remaining;
+        for (let i=0; i<new_dice_values.length; i++){
+            if (new_dice_values[i] > -1){
+                this.dice_values[i] = new_dice_values[i];
+            }
+        }
+        console.log(this.dice_values)
+        console.log(this.rolls_remaining_element)
     }
 }
 
