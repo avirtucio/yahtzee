@@ -5,7 +5,7 @@ class Dice{
         this.dice_elements= dice_elements; //array of images//
         this.photo_names=["blank", "one", "two", "three", "four", "five", "six"]
 
-        this.dice_values = []
+        this.dice_values = [0,0,0,0,0]
     }
 
     /**
@@ -24,7 +24,7 @@ class Dice{
      * @return {Array} an array of integers representing dice values of dice pictures
     */
     get_values(){
-        return this.roll()
+        return this.dice_values
     }
 
     /**
@@ -61,15 +61,20 @@ class Dice{
      * <br> Uses this.set to update dice
     */
     roll(){
-        this.rolls_remaining_element = this.rolls_remaining_element -1
         if (this.rolls_remaining_element > 0){
-            this.dice_values = []
+            let randomValues = []
             for (let i=0; i<5; i++){
-                this.dice_values.push(Math.floor((Math.random()*6)+1));
+                if(Array.from(this.dice_elements[i].classList).includes("reserved") === false){
+                    randomValues.push(Math.floor((Math.random()*6)+1));
+                } else {
+                    randomValues.push(-1)
+                }
             }
+            this.rolls_remaining_element -= 1
+            this.set(randomValues, this.rolls_remaining_element)
         }
         return this.dice_values
-    }
+    } //start with array of five 0's. when roll, add value to it. if reserved, dont change value. if not reserved, set equal to 0 THEN add values
 
     /**
      * Resets all dice_element pictures to blank, and unreserved.
@@ -77,7 +82,13 @@ class Dice{
      * <br> Uses this.#setDice to update dice
     */
     reset(){
-
+        for (let i=0; i<5; i++){
+            if(Array.from(this.dice_elements[i].classList).includes("reserved") === true){
+                console.log(i.toString() + "is reserved, will unrserve it")
+                this.reserve(this.dice_elements[i]);
+            }
+        }
+        this.set([0,0,0,0,0], 3);
     }
 
     /**
@@ -89,8 +100,13 @@ class Dice{
      * @param {Object} element the <img> element representing the die to reserve
     */
     reserve(die_element){
-        const list = die_element.classList;
-        list.toggle("reserved")
+        const classList = die_element.classList;
+        if (this.dice_values.includes(0) === false){
+            console.log("no blank dice here, will reserve")
+            classList.toggle("reserved")
+        } else {
+            console.log("there are blank dice here, will not reserve")
+        }
     }
 
     /**
@@ -103,7 +119,27 @@ class Dice{
      *
     */
     set(new_dice_values, new_rolls_remaining){
+        this.rolls_remaining_element = new_rolls_remaining;
+        document.getElementById("rolls_remaining").innerText = this.rolls_remaining_element
 
+        for (let i=0; i<new_dice_values.length; i++){
+            if (new_dice_values[i] > -1){
+                this.dice_values[i] = new_dice_values[i];
+            }
+        }
+        console.log(this.dice_values)
+        console.log(this.rolls_remaining_element)
+
+        for (let i=0; i<this.dice_elements.length; i++){
+            if (this.dice_values[i] === 0){
+                let source = "/img/blank.svg";
+                this.dice_elements[i].setAttribute('src', source);
+            } else if (this.dice_values[i] > 0) {
+                let diceValue = this.photo_names[this.dice_values[i]];
+                let source = "/img/" + diceValue + ".svg";
+                this.dice_elements[i].setAttribute('src', source);
+            }
+        }
     }
 }
 
