@@ -13,7 +13,7 @@ class Dice{
      * @return {Number} an integer representing the number of rolls remaining for a turn
     */
     get_rolls_remaining(){
-        return this.rolls_remaining_element
+        return parseInt(document.getElementById("rolls_remaining").innerText)
     }
 
     /**
@@ -119,16 +119,16 @@ class Dice{
      *
     */
     set(new_dice_values, new_rolls_remaining){
+        document.getElementById("rolls_remaining").innerText = new_rolls_remaining
         this.rolls_remaining_element = new_rolls_remaining;
-        document.getElementById("rolls_remaining").innerText = this.rolls_remaining_element
 
         for (let i=0; i<new_dice_values.length; i++){
             if (new_dice_values[i] > -1){
                 this.dice_values[i] = new_dice_values[i];
             }
         }
-        console.log(this.dice_values)
-        console.log(this.rolls_remaining_element)
+        // console.log(this.dice_values)
+        // console.log(this.rolls_remaining_element)
 
         for (let i=0; i<this.dice_elements.length; i++){
             if (this.dice_values[i] === 0){
