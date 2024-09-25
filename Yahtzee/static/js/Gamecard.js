@@ -27,7 +27,33 @@ class Gamecard{
      * @return {Boolean} a Boolean value indicating whether the score is valid for the category
     */
     is_valid_score(category, value){
-      
+        if (this.dice.photo_names.includes(category) === true){
+            let category_int = this.dice.photo_names.indexOf(category);
+            if (this.dice.get_counts()[category_int-1]*category_int === value){
+                return true;
+            } else {
+                return false;
+            }
+        } else if (category === 'three_of_a_kind'){
+            if (this.dice.get_counts().includes(3) === true){
+                if (value === )
+            }
+        } else if (category === 'four_of_a_kind'){
+            
+        } else if (category === 'full_house'){
+            
+        } else if (category === 'small_straight'){
+            
+        } else if (category === 'large_straight'){
+            
+        } else if (category === 'yahtzee'){
+            
+        } else if (category === 'chance'){
+
+        }
+      //.reduce() for upper section
+      //.reduce() for "of a kind" and yahtzee?
+      //get_counts() for full house, small, and large straight
     }
 
     /**
