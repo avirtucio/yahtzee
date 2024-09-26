@@ -36,24 +36,84 @@ class Gamecard{
             }
         } else if (category === 'three_of_a_kind'){
             if (this.dice.get_counts().includes(3) === true){
-                if (value === )
+                if (this.dice.get_counts().reduce(function(acc, el, index){
+                    return acc+((index+1)*el);
+                }, 0) === value){
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
             }
         } else if (category === 'four_of_a_kind'){
-            
+            if (this.dice.get_counts().includes(4) === true){
+                let real_score = this.dice.get_counts().reduce(function(acc, el, index){
+                    return acc+((index+1)*el);
+                }, 0);
+                if (real_score === value){
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
         } else if (category === 'full_house'){
-            
+            if ((this.dice.get_counts().includes(3) === true)&&(this.dice.get_counts().includes(2) === true)){
+                if (value === 25){
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
         } else if (category === 'small_straight'){
-            
+            let straight_counter = this.dice.get_counts().reduce(function(acc, el){
+                return acc+el
+            }, 0);
+            if (straight_counter === 4){
+                if (value === 30){
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
         } else if (category === 'large_straight'){
-            
+            let straight_counter = this.dice.get_counts().reduce(function(acc, el){
+                return acc+el
+            }, 0);
+            if (straight_counter === 5){
+                if (value === 40){
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
         } else if (category === 'yahtzee'){
-            
+            if (this.dice.get_counts().includes(5) === true){
+                if (value === 50){
+                    return true;
+                } else {
+                    return false;
+                }
+            } else {
+                return false;
+            }
         } else if (category === 'chance'){
-
+            if (value === this.dice.get_values().reduce(function(acc,el){
+                return acc + el;
+            }, 0)){
+                return true;
+            } else {
+                return false;
+            }
         }
-      //.reduce() for upper section
-      //.reduce() for "of a kind" and yahtzee?
-      //get_counts() for full house, small, and large straight
     }
 
     /**
