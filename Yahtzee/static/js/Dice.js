@@ -84,7 +84,7 @@ class Dice{
     reset(){
         for (let i=0; i<5; i++){
             if(Array.from(this.dice_elements[i].classList).includes("reserved") === true){
-                console.log(i.toString() + "is reserved, will unrserve it")
+                //console.log(i.toString() + "is reserved, will unrserve it")
                 this.reserve(this.dice_elements[i]);
             }
         }
@@ -102,10 +102,10 @@ class Dice{
     reserve(die_element){
         const classList = die_element.classList;
         if (this.dice_values.includes(0) === false){
-            console.log("no blank dice here, will reserve")
+            //console.log("no blank dice here, will reserve")
             classList.toggle("reserved")
         } else {
-            console.log("there are blank dice here, will not reserve")
+            //console.log("there are blank dice here, will not reserve")
         }
     }
 

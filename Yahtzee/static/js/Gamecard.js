@@ -29,16 +29,20 @@ class Gamecard{
     is_valid_score(category, value){
         if (this.dice.photo_names.includes(category) === true){
             let category_int = this.dice.photo_names.indexOf(category);
-            if (this.dice.get_counts()[category_int-1]*category_int === value){
+            console.log(typeof value)
+            console.log(typeof this.dice.get_counts()[category_int-1]*category_int)
+            if (this.dice.get_counts()[category_int-1]*category_int == value){
                 return true;
             } else {
                 return false;
             }
         } else if (category === 'three_of_a_kind'){
+            console.log(category)
             if (this.dice.get_counts().includes(3) === true){
+                console.log("3 in get values")
                 if (this.dice.get_counts().reduce(function(acc, el, index){
                     return acc+((index+1)*el);
-                }, 0) === value){
+                }, 0) == value){
                     return true;
                 } else {
                     return false;
@@ -51,7 +55,7 @@ class Gamecard{
                 let real_score = this.dice.get_counts().reduce(function(acc, el, index){
                     return acc+((index+1)*el);
                 }, 0);
-                if (real_score === value){
+                if (real_score == value){
                     return true;
                 } else {
                     return false;
@@ -61,7 +65,7 @@ class Gamecard{
             }
         } else if (category === 'full_house'){
             if ((this.dice.get_counts().includes(3) === true)&&(this.dice.get_counts().includes(2) === true)){
-                if (value === 25){
+                if (value == 25){
                     return true;
                 } else {
                     return false;
@@ -73,8 +77,8 @@ class Gamecard{
             let straight_counter = this.dice.get_counts().reduce(function(acc, el){
                 return acc+el
             }, 0);
-            if (straight_counter === 4){
-                if (value === 30){
+            if (straight_counter == 4){
+                if (value == 30){
                     return true;
                 } else {
                     return false;
@@ -86,8 +90,8 @@ class Gamecard{
             let straight_counter = this.dice.get_counts().reduce(function(acc, el){
                 return acc+el
             }, 0);
-            if (straight_counter === 5){
-                if (value === 40){
+            if (straight_counter == 5){
+                if (value == 40){
                     return true;
                 } else {
                     return false;
@@ -97,7 +101,7 @@ class Gamecard{
             }
         } else if (category === 'yahtzee'){
             if (this.dice.get_counts().includes(5) === true){
-                if (value === 50){
+                if (value == 50){
                     return true;
                 } else {
                     return false;
@@ -106,7 +110,7 @@ class Gamecard{
                 return false;
             }
         } else if (category === 'chance'){
-            if (value === this.dice.get_values().reduce(function(acc,el){
+            if (value == this.dice.get_values().reduce(function(acc,el){
                 return acc + el;
             }, 0)){
                 return true;

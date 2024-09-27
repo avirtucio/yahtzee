@@ -54,7 +54,15 @@ function roll_dice_handler(){
 
 function enter_score_handler(event){
     console.log("Score entry attempted for: ", event.target.id);
-    if (gamecard.is_valid_score(event.target.id, ))
+    let value = document.getElementById(event.target.id).value;
+    let category = event.target.id.split("_")
+    category.pop()
+    category = category.join("_")
+    if (gamecard.is_valid_score(category, value) === true){
+        console.log("is valid")
+    } else {
+        console.log("not valid")
+    }
 
 }
 
