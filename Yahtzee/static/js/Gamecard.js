@@ -27,6 +27,7 @@ class Gamecard{
      * @return {Boolean} a Boolean value indicating whether the score is valid for the category
     */
     is_valid_score(category, value){
+        // if value == 0, valid score
         if (this.dice.photo_names.includes(category) === true){
             let category_int = this.dice.photo_names.indexOf(category);
             if (this.dice.get_counts()[category_int-1]*category_int == value){
