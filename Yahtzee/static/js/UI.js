@@ -54,15 +54,26 @@ function roll_dice_handler(){
 
 function enter_score_handler(event){
     console.log("Score entry attempted for: ", event.target.id);
+
     let value = document.getElementById(event.target.id).value;
     let category = event.target.id.split("_")
     category.pop()
     category = category.join("_")
     if (gamecard.is_valid_score(category, value) === true){
         console.log("is valid")
+        document.getElementById(event.target.id).disabled = true;
     } else {
         console.log("not valid")
+        document.getElementById(event.target.id).disabled = false;
     }
+
+    document.getElementById("grand_total").innerText = Array.from(document.getElementsByClassName("category")).reduce(function(total, element){
+        if (element.hasAttribute("disabled") == true){
+            return total += parseInt(element.value);
+        } else {
+            return total;
+        }
+    }, 0);
 
 }
 

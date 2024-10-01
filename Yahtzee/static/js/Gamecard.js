@@ -29,8 +29,6 @@ class Gamecard{
     is_valid_score(category, value){
         if (this.dice.photo_names.includes(category) === true){
             let category_int = this.dice.photo_names.indexOf(category);
-            console.log(typeof value)
-            console.log(typeof this.dice.get_counts()[category_int-1]*category_int)
             if (this.dice.get_counts()[category_int-1]*category_int == value){
                 return true;
             } else {
@@ -126,7 +124,7 @@ class Gamecard{
     * @return {Number} an integer value representing the curent game score
     */
     get_score(){
-
+        return parseInt(document.getElementById("grand_total").textContent);
     }
 
     /**
