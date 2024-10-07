@@ -53,7 +53,9 @@ class Gamecard{
                 return 0
             }
         }, 0);
-        if (value == 0){
+        if (value.trim() === ''){
+            return false;
+        } else if (value === 0){
             return true;
         } else if (this.dice.photo_names.includes(category) === true){
             let category_int = this.dice.photo_names.indexOf(category);
