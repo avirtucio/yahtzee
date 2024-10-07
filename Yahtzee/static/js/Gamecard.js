@@ -42,33 +42,6 @@ class Gamecard{
             } else {
                 return false;
             }
-        } else if (category === 'three_of_a_kind'){
-            console.log(category)
-            if (this.dice.get_counts().includes(3) === true){
-                console.log("3 in get values")
-                if (this.dice.get_counts().reduce(function(acc, el, index){
-                    return acc+((index+1)*el);
-                }, 0) == value){
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                return false;
-            }
-        } else if (category === 'four_of_a_kind'){
-            if (this.dice.get_counts().includes(4) === true){
-                let real_score = this.dice.get_counts().reduce(function(acc, el, index){
-                    return acc+((index+1)*el);
-                }, 0);
-                if (real_score == value){
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                return false;
-            }
         } else if (category === 'full_house'){
             if ((this.dice.get_counts().includes(3) === true)&&(this.dice.get_counts().includes(2) === true)){
                 if (value == 25){
@@ -106,16 +79,6 @@ class Gamecard{
             } else {
                 return false;
             }
-        } else if (category === 'yahtzee'){
-            if (this.dice.get_counts().includes(5) === true){
-                if (value == 50){
-                    return true;
-                } else {
-                    return false;
-                }
-            } else {
-                return false;
-            }
         } else if (category === 'chance'){
             if (value == this.dice.get_values().reduce(function(acc,el){
                 return acc + el;
@@ -124,8 +87,62 @@ class Gamecard{
             } else {
                 return false;
             }
+        } else if (this.dice.get_counts().includes(5) === true){
+            if (category === 'yahtzee'){
+                if (value == 50){
+                    return true;
+                } else {
+                    return false;
+                }
+            } else if (category === 'four_of_a_kind'){
+                let real_score = this.dice.get_counts().reduce(function(acc, el, index){
+                    return acc+((index+1)*el);
+                }, 0);
+                if (real_score == value){
+                    return true;
+                } else {
+                    return false;
+                }
+            } else if (category === 'three_of_a_kind'){
+                if (this.dice.get_counts().reduce(function(acc, el, index){
+                    return acc+((index+1)*el);
+                }, 0) == value){
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        } else if (this.dice.get_counts().includes(4) === true){
+            if (category === 'four_of_a_kind'){
+                let real_score = this.dice.get_counts().reduce(function(acc, el, index){
+                    return acc+((index+1)*el);
+                }, 0);
+                if (real_score == value){
+                    return true;
+                } else {
+                    return false;
+                }
+            } else if (category === 'three_of_a_kind'){
+                if (this.dice.get_counts().reduce(function(acc, el, index){
+                    return acc+((index+1)*el);
+                }, 0) == value){
+                    return true;
+                } else {
+                    return false;
+                }
+            }
+        } else if (this.dice.get_counts().includes(3) === true){
+            if (category === 'three_of_a_kind'){
+                if (this.dice.get_counts().reduce(function(acc, el, index){
+                    return acc+((index+1)*el);
+                }, 0) == value){
+                    return true;
+                } else {
+                    return false;
+                }
+            }
         }
-    }
+    } 
 
     /**
     * Returns the current Grand Total score for a scorecard
