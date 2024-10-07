@@ -21,7 +21,7 @@ window.dice = dice; //useful for testing to add a reference to global window obj
 
 //-----Gamecard Setup---------//
 let category_elements = Array.from(document.getElementsByClassName("category"));
-console.log(category_elements)
+//console.log(category_elements)
 for (let category of category_elements){
     category.addEventListener('keypress', function(event){
         if (event.key === 'Enter') {

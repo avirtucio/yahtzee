@@ -13,7 +13,13 @@ class Gamecard{
      * @return {Boolean} a Boolean value indicating whether the scorecard is full
      */
     is_finished(){
-
+        for (let i=0; i<this.category_elements.length; i++){
+            if (this.category_elements[i].hasAttribute("disabled") == false){
+                return false
+            } else {
+                return true
+            }
+        }
     }
 
     /**
@@ -27,8 +33,9 @@ class Gamecard{
      * @return {Boolean} a Boolean value indicating whether the score is valid for the category
     */
     is_valid_score(category, value){
-        // if value == 0, valid score
-        if (this.dice.photo_names.includes(category) === true){
+        if (value == 0){
+            return true;
+        } else if (this.dice.photo_names.includes(category) === true){
             let category_int = this.dice.photo_names.indexOf(category);
             if (this.dice.get_counts()[category_int-1]*category_int == value){
                 return true;
@@ -76,6 +83,7 @@ class Gamecard{
             let straight_counter = this.dice.get_counts().reduce(function(acc, el){
                 return acc+el
             }, 0);
+            console.log(straight_counter)
             if (straight_counter == 4){
                 if (value == 30){
                     return true;
@@ -132,7 +140,33 @@ class Gamecard{
      * Updates all score elements for a scorecard
     */
     update_scores(){
-       
+       document.getElementById("upper_score").value = Array.from(document.getElementsByClassName("upper")).reduce(function(acc, el, index){
+        if (index <= 6){
+            return acc + parseInt(el.value)
+        } else {
+            return acc
+        }
+       }, 0);
+
+       if (document.getElementById("upper_score").value > 63){
+        document.getElementById("upper_bonus").value = 35;
+       } else {
+        document.getElementById("upper_bonus").value = 0;
+       }
+
+       document.getElementById("upper_total").value = document.getElementById("upper_score").value + document.getElementById("upper_bonus").value;
+
+       document.getElementById("lower_score").value = Array.from(document.getElementsByClassName("lower")).reduce(function(acc, el, index){
+        if (index <= 6){
+            return acc + parseInt(el.value)
+        } else {
+            return acc
+        }
+       }, 0);
+
+       document.getElementById("upper_total_lower").value = document.getElementById("upper_total").value;
+
+       document.getElementById("grand_total").value = parseInt(document.getElementById("grand_total").innerText);
     }
 
     /**
@@ -161,7 +195,8 @@ class Gamecard{
      * @param {Object} gameObject the object version of the scorecard
     */
     load_scorecard(score_info){
-       
+       let scorecard = JSON.parse(score_info);
+       return scorecard
     }
 
     /**
@@ -191,7 +226,33 @@ class Gamecard{
      *
      */
     to_object(){
-      
+      let scorecard = {};
+      scorecard["rolls_remaining"] = this.dice.get_rolls_remaining();
+      scorecard["upper"] = {};
+      scorecard["lower"] = {};
+      let upper = Array.from(document.getElementsByClassName("upper"));
+      for (let i=0; i<6; i++){
+        let category = upper[i].id.split("_");
+        category.pop();
+        category = category.join("_");
+        if (upper[i].value){
+            scorecard["upper"][category] = parseInt(upper[i].value);
+        } else {
+            scorecard["upper"][category] = -1
+        }
+      }
+      let lower = Array.from(document.getElementsByClassName("lower"));
+      for (let i=0; i<6; i++){
+        let category = lower[i].id.split("_");
+        category.pop();
+        category = category.join("_");
+        if (lower[i].value){
+            scorecard["lower"][category] = parseInt(lower[i].value);
+        } else {
+            scorecard["lower"][category] = -1
+        }
+      }
+      return scorecard
     }
 }
 
