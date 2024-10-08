@@ -56,6 +56,9 @@ function enter_score_handler(event){
     console.log("Score entry attempted for: ", event.target.id);
 
     let value = document.getElementById(event.target.id).value;
+    if (value.trim() != ''){
+        value = parseInt(document.getElementById(event.target.id).value)
+    }
     let category = event.target.id.split("_")
     category.pop()
     category = category.join("_")

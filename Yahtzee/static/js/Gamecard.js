@@ -33,6 +33,9 @@ class Gamecard{
      * @return {Boolean} a Boolean value indicating whether the score is valid for the category
     */
     is_valid_score(category, value){
+        if (this.dice.dice_values.includes(0) === true){
+            return false;
+        }
         let dice_counts = Object.assign([], this.dice.get_counts())
         let straight_counter = this.dice.get_counts().reduce(function(acc, el, index){
             if (el == 0){
@@ -53,10 +56,13 @@ class Gamecard{
                 return 0
             }
         }, 0);
-        if (value.trim() === ''){
+        console.log(typeof value)
+        if (typeof value === 'string'){
             return false;
         } else if (value === 0){
             return true;
+        } else if (value < 0){
+            return false;
         } else if (this.dice.photo_names.includes(category) === true){
             let category_int = this.dice.photo_names.indexOf(category);
             if (this.dice.get_counts()[category_int-1]*category_int == value){
@@ -135,8 +141,9 @@ class Gamecard{
                 } else {
                     return false;
                 }
-            }
-        } else if (straight_counter == 5){
+            } 
+        } 
+        if (straight_counter == 5){
             if (category === 'large_straight'){
                 if (value == 40){
                     return true;
@@ -158,6 +165,8 @@ class Gamecard{
                     return false;
                 }
             }
+        } else {
+            return false;
         }
     } 
 
