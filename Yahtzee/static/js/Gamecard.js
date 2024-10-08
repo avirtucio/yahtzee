@@ -239,6 +239,12 @@ class Gamecard{
     */
     load_scorecard(score_info){
        let scorecard = JSON.parse(score_info);
+       this.dice.rolls_remaining_element = scorecard["rolls_remaining"];
+       scorecard["upper"].forEach(function(key){
+        let category_id = key+"_input"
+    
+       });
+
        return scorecard
     }
 
