@@ -176,6 +176,7 @@ class Gamecard{
     * @return {Number} an integer value representing the curent game score
     */
     get_score(){
+        this.update_scores()
         return parseInt(document.getElementById("grand_total").textContent);
     }
 
@@ -185,7 +186,11 @@ class Gamecard{
     update_scores(){
        document.getElementById("upper_score").value = Array.from(document.getElementsByClassName("upper")).reduce(function(acc, el, index){
         if (index <= 6){
-            return acc + parseInt(el.value)
+            if (el.hasAttribute("disabled") == true){
+                return acc + parseInt(el.value)
+            } else {
+                return acc
+            }
         } else {
             return acc
         }
@@ -201,7 +206,11 @@ class Gamecard{
 
        document.getElementById("lower_score").value = Array.from(document.getElementsByClassName("lower")).reduce(function(acc, el, index){
         if (index <= 6){
-            return acc + parseInt(el.value)
+            if (el.hasAttribute("disabled") == true){
+                return acc + parseInt(el.value)
+            } else {
+                return acc
+            }
         } else {
             return acc
         }
@@ -209,7 +218,7 @@ class Gamecard{
 
        document.getElementById("upper_total_lower").value = document.getElementById("upper_total").value;
 
-       document.getElementById("grand_total").value = parseInt(document.getElementById("grand_total").innerText);
+       document.getElementById("grand_total").value = document.getElementById("upper_total").value + document.getElementById("lower_score").value;
     }
 
     /**
@@ -238,13 +247,33 @@ class Gamecard{
      * @param {Object} gameObject the object version of the scorecard
     */
     load_scorecard(score_info){
-       let scorecard = JSON.parse(score_info);
+       let scorecard = score_info;
        this.dice.rolls_remaining_element = scorecard["rolls_remaining"];
-       scorecard["upper"].forEach(function(key){
-        let category_id = key+"_input"
+       document.getElementById("rolls_remaining").innerText = scorecard["rolls_remaining"]
     
-       });
+       for (const [key] of Object.entries(scorecard["upper"])){
+        let category_id = key+"_input"
+        if(scorecard["upper"][key] < 0){
+            document.getElementById(category_id).value = '';
+            document.getElementById(category_id).disabled = false;
+        } else {
+            document.getElementById(category_id).value = scorecard["upper"][key];
+            document.getElementById(category_id).disabled = true;
+        }
+       }
 
+       for (const [key] of Object.entries(scorecard["lower"])){
+        let category_id = key+"_input"
+        if(scorecard["lower"][key] < 0){
+            document.getElementById(category_id).value = '';
+            document.getElementById(category_id).disabled = false;
+        } else {
+            document.getElementById(category_id).value = scorecard["upper"][key];
+            document.getElementById(category_id).disabled = true;
+        }
+       }
+       
+       
        return scorecard
     }
 

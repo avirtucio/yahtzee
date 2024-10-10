@@ -70,6 +70,7 @@ function enter_score_handler(event){
         document.getElementById(event.target.id).disabled = false;
     }
 
+    gamecard.update_scores()
     document.getElementById("grand_total").innerText = Array.from(document.getElementsByClassName("category")).reduce(function(total, element){
         if (element.hasAttribute("disabled") == true){
             return total += parseInt(element.value);
@@ -77,6 +78,9 @@ function enter_score_handler(event){
             return total;
         }
     }, 0);
+
+    document.getElementById("grand_total").innerText = document.getElementById("grand_total").value;
+
 
 }
 
