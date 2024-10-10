@@ -15,11 +15,10 @@ class Gamecard{
     is_finished(){
         for (let i=0; i<this.category_elements.length; i++){
             if (this.category_elements[i].hasAttribute("disabled") == false){
-                return false
-            } else {
-                return true
+                return false;
             }
         }
+        return true;
     }
 
     /**
@@ -177,7 +176,12 @@ class Gamecard{
     */
     get_score(){
         this.update_scores()
-        return parseInt(document.getElementById("grand_total").textContent);
+        console.log(document.getElementById("grand_total").textContent)
+        if (parseInt(document.getElementById("grand_total").textContent)){
+            return parseInt(document.getElementById("grand_total").textContent)
+        } else {
+            return 0
+        }
     }
 
     /**
@@ -186,7 +190,10 @@ class Gamecard{
     update_scores(){
        document.getElementById("upper_score").value = Array.from(document.getElementsByClassName("upper")).reduce(function(acc, el, index){
         if (index <= 6){
-            if (el.hasAttribute("disabled") == true){
+            console.log(index)
+            if (el.hasAttribute("disabled") === true){
+                console.log(el)
+                console.log(acc)
                 return acc + parseInt(el.value)
             } else {
                 return acc
@@ -195,12 +202,14 @@ class Gamecard{
             return acc
         }
        }, 0);
+       console.log(document.getElementById("upper_score").value)
 
        if (document.getElementById("upper_score").value > 63){
         document.getElementById("upper_bonus").value = 35;
-       } else {
-        document.getElementById("upper_bonus").value = 0;
-       }
+       } 
+    //    else {
+    //     document.getElementById("upper_bonus").value = 0;
+    //    }
 
        document.getElementById("upper_total").value = document.getElementById("upper_score").value + document.getElementById("upper_bonus").value;
 
@@ -219,6 +228,7 @@ class Gamecard{
        document.getElementById("upper_total_lower").value = document.getElementById("upper_total").value;
 
        document.getElementById("grand_total").value = document.getElementById("upper_total").value + document.getElementById("lower_score").value;
+       document.getElementById("grand_total").innerText = document.getElementById("grand_total").value;
     }
 
     /**
@@ -268,7 +278,7 @@ class Gamecard{
             document.getElementById(category_id).value = '';
             document.getElementById(category_id).disabled = false;
         } else {
-            document.getElementById(category_id).value = scorecard["upper"][key];
+            document.getElementById(category_id).value = scorecard["lower"][key];
             document.getElementById(category_id).disabled = true;
         }
        }
@@ -313,21 +323,21 @@ class Gamecard{
         let category = upper[i].id.split("_");
         category.pop();
         category = category.join("_");
-        if (upper[i].value){
-            scorecard["upper"][category] = parseInt(upper[i].value);
+        if (upper[i].disabled === true){
+            scorecard["upper"][category.toString()] = parseInt(upper[i].value);
         } else {
-            scorecard["upper"][category] = -1
+            scorecard["upper"][category.toString()] = -1
         }
       }
       let lower = Array.from(document.getElementsByClassName("lower"));
-      for (let i=0; i<6; i++){
+      for (let i=0; i<7; i++){
         let category = lower[i].id.split("_");
         category.pop();
         category = category.join("_");
-        if (lower[i].value){
-            scorecard["lower"][category] = parseInt(lower[i].value);
+        if (lower[i].disabled === true){
+            scorecard["lower"][category.toString()] = parseInt(lower[i].value);
         } else {
-            scorecard["lower"][category] = -1
+            scorecard["lower"][category.toString()] = -1
         }
       }
       return scorecard
