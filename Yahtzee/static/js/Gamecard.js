@@ -55,7 +55,6 @@ class Gamecard{
                 return 0
             }
         }, 0);
-        console.log(typeof value)
         if (typeof value === 'string'){
             return false;
         } else if (value === 0){
@@ -176,7 +175,6 @@ class Gamecard{
     */
     get_score(){
         this.update_scores()
-        console.log(document.getElementById("grand_total").textContent)
         if (parseInt(document.getElementById("grand_total").textContent)){
             return parseInt(document.getElementById("grand_total").textContent)
         } else {
@@ -190,10 +188,7 @@ class Gamecard{
     update_scores(){
        document.getElementById("upper_score").innerHTML = Array.from(document.getElementsByClassName("upper")).reduce(function(acc, el, index){
         if (index <= 6){
-            console.log(index)
             if (el.hasAttribute("disabled") === true){
-                console.log(el)
-                console.log(acc)
                 return acc + parseInt(el.value)
             } else {
                 return acc
@@ -202,7 +197,6 @@ class Gamecard{
             return acc
         }
        }, 0);
-       console.log(document.getElementById("upper_score").value)
 
        if (document.getElementById("upper_score").innerHTML > 63){
         document.getElementById("upper_bonus").innerHTML = 35;

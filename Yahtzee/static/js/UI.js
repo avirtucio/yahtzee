@@ -21,7 +21,6 @@ window.dice = dice; //useful for testing to add a reference to global window obj
 
 //-----Gamecard Setup---------//
 let category_elements = Array.from(document.getElementsByClassName("category"));
-//console.log(category_elements)
 for (let category of category_elements){
     category.addEventListener('keypress', function(event){
         if (event.key === 'Enter') {
@@ -34,22 +33,44 @@ console.log(score_elements)
 let gamecard = new Gamecard(category_elements, score_elements, dice);
 window.gamecard = gamecard; //useful for testing to add a reference to global window object
 
+//------Save and Load Button Setup------//
+let save_button = document.getElementById("save_game")
+let load_button = document.getElementById("load_game")
+
+save_button.addEventListener('click', save_game_handler);
+load_button.addEventListener('click', load_game_handler);
 
 
 
 //---------Event Handlers-------//
+function save_game_handler(event){
+    localStorage.setItem('yahtzee', JSON.stringify(gamecard.to_object()));
+    display_feedback("game saved", "good")
+}
+
+function load_game_handler(event){
+    console.log('load button pressed');
+    console.log(typeof localStorage.getItem("yahtzee"))
+    
+    gamecard.load_scorecard(JSON.parse(localStorage.getItem("yahtzee")))
+}
+
 function reserve_die_handler(event){
     console.log("Trying to reserve "+event.target.id);
     dice.reserve(event.target)
 }
 
 function roll_dice_handler(){
-    display_feedback("Rolling the dice...", "good");
     dice.roll()
 
-    console.log("Dice values:", dice.get_values());
-    console.log("Sum of all dice:", dice.get_sum());
-    console.log("Count of all dice faces:", dice.get_counts());
+    if (dice.get_rolls_remaining() === 0){
+        display_feedback("Rolling the dice...", "bad");
+    } else {
+        display_feedback("Rolling the dice...", "good");
+    }
+    // console.log("Dice values:", dice.get_values());
+    // console.log("Sum of all dice:", dice.get_sum());
+    // console.log("Count of all dice faces:", dice.get_counts());
 }
 
 function enter_score_handler(event){
@@ -63,29 +84,22 @@ function enter_score_handler(event){
     category.pop()
     category = category.join("_")
     if (gamecard.is_valid_score(category, value) === true){
-        console.log("is valid")
+        display_feedback("score input", "good")
         document.getElementById(event.target.id).disabled = true;
     } else {
-        console.log("not valid")
+        display_feedback('bad', 'score input')
         document.getElementById(event.target.id).disabled = false;
     }
 
     gamecard.update_scores()
-    document.getElementById("grand_total").innerText = Array.from(document.getElementsByClassName("category")).reduce(function(total, element){
-        if (element.hasAttribute("disabled") == true){
-            return total += parseInt(element.value);
-        } else {
-            return total;
-        }
-    }, 0);
-
-    document.getElementById("grand_total").innerText = document.getElementById("grand_total").value;
-
-
+    if (gamecard.is_finished() === true){
+        display_feedback("game finished", "good")
+    }
 }
 
 //------Feedback ---------//
 function display_feedback(message, context){
     console.log(context, "Feedback: ", message);
-
+    let feedback_el = document.getElementById("feedback")
+    
 }
