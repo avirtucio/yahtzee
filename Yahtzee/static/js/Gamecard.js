@@ -188,7 +188,7 @@ class Gamecard{
      * Updates all score elements for a scorecard
     */
     update_scores(){
-       document.getElementById("upper_score").value = Array.from(document.getElementsByClassName("upper")).reduce(function(acc, el, index){
+       document.getElementById("upper_score").innerHTML = Array.from(document.getElementsByClassName("upper")).reduce(function(acc, el, index){
         if (index <= 6){
             console.log(index)
             if (el.hasAttribute("disabled") === true){
@@ -204,16 +204,20 @@ class Gamecard{
        }, 0);
        console.log(document.getElementById("upper_score").value)
 
-       if (document.getElementById("upper_score").value > 63){
-        document.getElementById("upper_bonus").value = 35;
+       if (document.getElementById("upper_score").innerHTML > 63){
+        document.getElementById("upper_bonus").innerHTML = 35;
        } 
     //    else {
-    //     document.getElementById("upper_bonus").value = 0;
+    //     document.getElementById("upper_bonus").innerHTML = 0;
     //    }
+       if (parseInt(document.getElementById("upper_bonus").innerHTML)){
+        document.getElementById("upper_total").innerHTML = parseInt(document.getElementById("upper_score").innerHTML) + parseInt(document.getElementById("upper_bonus").innerHTML);
+       } else {
+        document.getElementById("upper_total").innerHTML = parseInt(document.getElementById("upper_score").innerHTML)
+       }
+       
 
-       document.getElementById("upper_total").value = document.getElementById("upper_score").value + document.getElementById("upper_bonus").value;
-
-       document.getElementById("lower_score").value = Array.from(document.getElementsByClassName("lower")).reduce(function(acc, el, index){
+       document.getElementById("lower_score").innerHTML = Array.from(document.getElementsByClassName("lower")).reduce(function(acc, el, index){
         if (index <= 6){
             if (el.hasAttribute("disabled") == true){
                 return acc + parseInt(el.value)
@@ -225,10 +229,11 @@ class Gamecard{
         }
        }, 0);
 
-       document.getElementById("upper_total_lower").value = document.getElementById("upper_total").value;
+       document.getElementById("upper_total_lower").innerHTML = document.getElementById("upper_total").innerHTML;
 
-       document.getElementById("grand_total").value = document.getElementById("upper_total").value + document.getElementById("lower_score").value;
-       document.getElementById("grand_total").innerText = document.getElementById("grand_total").value;
+       document.getElementById("grand_total").innerHTML = parseInt(document.getElementById("upper_total").innerHTML) + parseInt(document.getElementById("lower_score").innerHTML);
+       
+       //document.getElementById("grand_total").innerText = document.getElementById("grand_total").value;
     }
 
     /**
@@ -283,7 +288,7 @@ class Gamecard{
         }
        }
        
-       
+       this.update_scores()
        return scorecard
     }
 
