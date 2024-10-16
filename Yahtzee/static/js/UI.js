@@ -33,6 +33,8 @@ console.log(score_elements)
 let gamecard = new Gamecard(category_elements, score_elements, dice);
 window.gamecard = gamecard; //useful for testing to add a reference to global window object
 
+display_feedback("good", "new game loaded")
+
 //------Save and Load Button Setup------//
 let save_button = document.getElementById("save_game")
 let load_button = document.getElementById("load_game")
@@ -45,14 +47,18 @@ load_button.addEventListener('click', load_game_handler);
 //---------Event Handlers-------//
 function save_game_handler(event){
     localStorage.setItem('yahtzee', JSON.stringify(gamecard.to_object()));
-    display_feedback("good", "game saved")
+    display_feedback("good", "game saved successful")
 }
 
 function load_game_handler(event){
     console.log('load button pressed');
-    console.log(typeof localStorage.getItem("yahtzee"))
+    if (localStorage.getItem("yahtzee")){
+        gamecard.load_scorecard(JSON.parse(localStorage.getItem("yahtzee")))
+        display_feedback("good", "successfully loaded game")
+    } else {
+        display_feedback("bad", "no saved game exists")
+    }
     
-    gamecard.load_scorecard(JSON.parse(localStorage.getItem("yahtzee")))
 }
 
 function reserve_die_handler(event){
@@ -63,16 +69,15 @@ function reserve_die_handler(event){
 function roll_dice_handler(){
     dice.roll()
 
-    if (dice.get_rolls_remaining() === 0){
-        display_feedback("bad", "Rolling the dice...");
-    } else {
-        display_feedback("good", "Rolling the dice...");
-    }
-
     let feedback_el = document.getElementById("feedback")
     feedback_el.innerHTML = ""
     feedback_el.classList.remove("good")
     feedback_el.classList.remove("bad")
+
+    if (dice.get_rolls_remaining() === 0){
+        display_feedback("bad", "Rolling the dice...");
+    } 
+    
 
     // console.log("Dice values:", dice.get_values());
     // console.log("Sum of all dice:", dice.get_sum());
@@ -90,16 +95,17 @@ function enter_score_handler(event){
     category.pop()
     category = category.join("_")
     if (gamecard.is_valid_score(category, value) === true){
-        display_feedback("good", "score input")
+        display_feedback("good", "score input valid")
         document.getElementById(event.target.id).disabled = true;
+        dice.reset();
     } else {
-        display_feedback('bad', 'score input')
+        display_feedback('bad', 'score input invalid')
         document.getElementById(event.target.id).disabled = false;
     }
 
     gamecard.update_scores()
     if (gamecard.is_finished() === true){
-        display_feedback("good", "game finished")
+        display_feedback("good", "game is finished")
     }
 }
 
