@@ -45,7 +45,7 @@ load_button.addEventListener('click', load_game_handler);
 //---------Event Handlers-------//
 function save_game_handler(event){
     localStorage.setItem('yahtzee', JSON.stringify(gamecard.to_object()));
-    display_feedback("game saved", "good")
+    display_feedback("good", "game saved")
 }
 
 function load_game_handler(event){
@@ -64,10 +64,16 @@ function roll_dice_handler(){
     dice.roll()
 
     if (dice.get_rolls_remaining() === 0){
-        display_feedback("Rolling the dice...", "bad");
+        display_feedback("bad", "Rolling the dice...");
     } else {
-        display_feedback("Rolling the dice...", "good");
+        display_feedback("good", "Rolling the dice...");
     }
+
+    let feedback_el = document.getElementById("feedback")
+    feedback_el.innerHTML = ""
+    feedback_el.classList.remove("good")
+    feedback_el.classList.remove("bad")
+
     // console.log("Dice values:", dice.get_values());
     // console.log("Sum of all dice:", dice.get_sum());
     // console.log("Count of all dice faces:", dice.get_counts());
@@ -84,7 +90,7 @@ function enter_score_handler(event){
     category.pop()
     category = category.join("_")
     if (gamecard.is_valid_score(category, value) === true){
-        display_feedback("score input", "good")
+        display_feedback("good", "score input")
         document.getElementById(event.target.id).disabled = true;
     } else {
         display_feedback('bad', 'score input')
@@ -93,7 +99,7 @@ function enter_score_handler(event){
 
     gamecard.update_scores()
     if (gamecard.is_finished() === true){
-        display_feedback("game finished", "good")
+        display_feedback("good", "game finished")
     }
 }
 
@@ -101,5 +107,8 @@ function enter_score_handler(event){
 function display_feedback(message, context){
     console.log(context, "Feedback: ", message);
     let feedback_el = document.getElementById("feedback")
-    
+    feedback_el.innerHTML = context
+    feedback_el.classList.remove("good")
+    feedback_el.classList.remove("bad")
+    feedback_el.classList.add(message)
 }

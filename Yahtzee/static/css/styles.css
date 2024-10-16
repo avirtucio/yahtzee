@@ -8,3 +8,18 @@ body {
     font-weight: 400;
     font-style: normal;
 }
+
+.reserved {
+    border-style: solid;
+    border-color: blue;
+}
+
+.good {
+    border-style: solid;
+    border-color: green;
+}
+
+.bad {
+    border-style: solid;
+    border-color: red;
+}
