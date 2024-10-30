@@ -8,6 +8,7 @@ class User:
         self.table_name = table_name
     
     def initialize_table(self):
+        print(self.db_name)
         db_connection = sqlite3.connect(self.db_name)
         cursor = db_connection.cursor()
         schema=f"""
@@ -26,9 +27,17 @@ class User:
         try: 
             db_connection = sqlite3.connect(self.db_name)
             cursor = db_connection.cursor()
-            '''
-                Insert your code here
-            '''
+        #######
+            if (username):
+                results = cursor.execute(f"SELECT * FROM {self.table_name} WHERE EXISTS ()")
+            elif (id):
+                results = cursor.execute(f"SELECT * FROM {self.table_name} WHERE EXISTS ()")
+            
+            if (results):
+                return True
+            else:
+                return False
+        #######
         except sqlite3.Error as error:
             return {"status":"error",
                     "data":error}
@@ -63,9 +72,9 @@ class User:
         try: 
             db_connection = sqlite3.connect(self.db_name)
             cursor = db_connection.cursor()
-            '''
-                Insert your code here
-            '''
+        #######
+            return self.to_dict(results)
+        #######
         except sqlite3.Error as error:
             return {"status":"error",
                     "data":error}
@@ -126,7 +135,7 @@ class User:
 if __name__ == '__main__':
     import os
     print("Current working directory:", os.getcwd())
-    DB_location=f"{os.getcwd()}/Models/yahtzeeDB.db"
+    DB_location=f"{os.getcwd()}/downloads/yahtzee-7/models/yahtzeeDB.db"
     table_name = "users"
     
     Users = User(DB_location, table_name) 
