@@ -29,13 +29,15 @@ class User:
             cursor = db_connection.cursor()
         #######
             if (username):
-                results = cursor.execute(f"SELECT * FROM {self.table_name} WHERE EXISTS ()")
-            elif (id):
-                results = cursor.execute(f"SELECT * FROM {self.table_name} WHERE EXISTS ()")
+                results = cursor.execute(f"SELECT * FROM {self.table_name} WHERE username = '{username}';").fetchall()
+            # elif (id):
+            #     results = cursor.execute(f"SELECT * FROM {self.table_name} WHERE id = '{id};").fetchall()
             
             if (results):
+                print("exists")
                 return True
             else:
+                print('doesnt exist')
                 return False
         #######
         except sqlite3.Error as error:
@@ -51,11 +53,12 @@ class User:
             user_id = random.randint(0, self.max_safe_id)
 
             # TODO: check to see if id already exists!!
-            
-            user_data = (user_id, user_info["email"], user_info["username"], user_info["password"])
-            #are you sure you have all data in the correct format?
-            cursor.execute(f"INSERT INTO {self.table_name} VALUES (?, ?, ?, ?);", user_data)
-            db_connection.commit()
+
+            if ((self.exists(user_id) == False) and (self.exists(user_info["username"]) == False)):
+                user_data = (user_id, user_info["email"], user_info["username"], user_info["password"])
+                #are you sure you have all data in the correct format?
+                cursor.execute(f"INSERT INTO {self.table_name} VALUES (?, ?, ?, ?);", user_data)
+                db_connection.commit()
             
             return {"status": "success",
                     "data": self.to_dict(user_data)
@@ -72,8 +75,20 @@ class User:
         try: 
             db_connection = sqlite3.connect(self.db_name)
             cursor = db_connection.cursor()
-        #######
-            return self.to_dict(results)
+        ####### check if exists first
+            if (username):
+                print('username', username)
+                if (self.exists(username) == True):
+                    results = cursor.execute(f"SELECT * FROM {self.table_name} WHERE username = '{username}';").fetchall()
+                    #print(results[0])
+                    return self.to_dict(results[0])
+            # elif (id):
+            #     if (self.exists(id) == True):
+            #         results = cursor.execute(f"SELECT * FROM {self.table_name} WHERE username = '{id}';").fetchall()
+            #         #print(results[0])
+            #         return self.to_dict(results[0])
+            else:
+                return {}
         #######
         except sqlite3.Error as error:
             return {"status":"error",
@@ -85,9 +100,11 @@ class User:
         try: 
             db_connection = sqlite3.connect(self.db_name)
             cursor = db_connection.cursor()
-            '''
-                Insert your code here
-            '''
+
+            results = cursor.execute(f"SELECT * FROM {self.table_name};").fetchall()
+            print(results)
+            return results
+        
         except sqlite3.Error as error:
             return {"status":"error",
                     "data":error}
@@ -114,6 +131,9 @@ class User:
             '''
                 Insert your code here
             '''
+            cursor.execute(f"DELETE FROM {self.table_name} WHERE username = '{username}';")
+            db_connection.commit()
+
         except sqlite3.Error as error:
             return {"status":"error",
                     "data":error}
@@ -125,6 +145,7 @@ class User:
            into a Python dictionary
         '''
         user_dict={}
+        print("usertuple",user_tuple, user_tuple[0], type(user_tuple[1]))
         if user_tuple:
             user_dict["id"]=user_tuple[0]
             user_dict["email"]=user_tuple[1]
@@ -135,7 +156,7 @@ class User:
 if __name__ == '__main__':
     import os
     print("Current working directory:", os.getcwd())
-    DB_location=f"{os.getcwd()}/downloads/yahtzee-7/models/yahtzeeDB.db"
+    DB_location=f"{os.getcwd()}yahtzeeDB.db"
     table_name = "users"
     
     Users = User(DB_location, table_name) 
@@ -147,4 +168,8 @@ if __name__ == '__main__':
         "password":"123TriniT"
     }
     results = Users.create(user_details)
-    print(results)
+    #print(results, type(results))
+
+    Users.exists('justingohde')
+    #Users.get('justingohde')
+    
