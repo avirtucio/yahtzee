@@ -1,3 +1,5 @@
+# Arlo Virtucio #
+
 import sqlite3
 import random
 
@@ -30,15 +32,15 @@ class User:
         #######
             if (username):
                 results = cursor.execute(f"SELECT * FROM {self.table_name} WHERE username = '{username}';").fetchall()
-            # elif (id):
-            #     results = cursor.execute(f"SELECT * FROM {self.table_name} WHERE id = '{id};").fetchall()
+            elif (id):
+                results = cursor.execute(f"SELECT * FROM {self.table_name} WHERE id = {id};").fetchall()
             
             if (results):
-                print("exists")
-                return True
+                return {"status":"success",
+                    "data":True}
             else:
-                print('doesnt exist')
-                return False
+                return {"status":"success",
+                    "data":False}
         #######
         except sqlite3.Error as error:
             return {"status":"error",
@@ -54,14 +56,18 @@ class User:
 
             # TODO: check to see if id already exists!!
 
-            if ((self.exists(user_id) == False) and (self.exists(user_info["username"]) == False)):
+            if ((self.exists(id=user_id)["data"] == False) and (self.exists(username=user_info["username"])["data"] == False)):
                 user_data = (user_id, user_info["email"], user_info["username"], user_info["password"])
                 #are you sure you have all data in the correct format?
                 cursor.execute(f"INSERT INTO {self.table_name} VALUES (?, ?, ?, ?);", user_data)
                 db_connection.commit()
-            
-            return {"status": "success",
+                
+                return {"status": "success",
                     "data": self.to_dict(user_data)
+                    }
+            else:
+                return {"status": "error",
+                    "data": "dslkjfl;aksdj"
                     }
         
         except sqlite3.Error as error:
@@ -78,17 +84,20 @@ class User:
         ####### check if exists first
             if (username):
                 print('username', username)
-                if (self.exists(username) == True):
+                if (self.exists(username=username) == True):
                     results = cursor.execute(f"SELECT * FROM {self.table_name} WHERE username = '{username}';").fetchall()
                     #print(results[0])
-                    return self.to_dict(results[0])
-            # elif (id):
-            #     if (self.exists(id) == True):
-            #         results = cursor.execute(f"SELECT * FROM {self.table_name} WHERE username = '{id}';").fetchall()
-            #         #print(results[0])
-            #         return self.to_dict(results[0])
+                    return {"status":"success",
+                    "data":self.to_dict(results[0])}
+            elif (id):
+                if (self.exists(id=id) == True):
+                    results = cursor.execute(f"SELECT * FROM {self.table_name} WHERE id = '{id}';").fetchall()
+                    #print(results[0])
+                    return {"status":"success",
+                    "data":self.to_dict(results[0])}
             else:
-                return {}
+                return {"status":"success",
+                    "data":"user doesnt exist"}
         #######
         except sqlite3.Error as error:
             return {"status":"error",
@@ -103,7 +112,8 @@ class User:
 
             results = cursor.execute(f"SELECT * FROM {self.table_name};").fetchall()
             print(results)
-            return results
+            return {"status":"success",
+                    "data":results}
         
         except sqlite3.Error as error:
             return {"status":"error",
@@ -118,6 +128,14 @@ class User:
             '''
                 Insert your code here
             '''
+            for element in user_info:
+                if (element != "id"):
+                    cursor.execute(f"UPDATE {self.table_name} SET {element}='{user_info[element]}' WHERE id = '{user_info['id']}'")
+                    db_connection.commit()
+            
+            return {"status":"success",
+                    "data":self.to_dict(self.get(id=user_info['id'])['data'])}
+
         except sqlite3.Error as error:
             return {"status":"error",
                     "data":error}
@@ -145,7 +163,7 @@ class User:
            into a Python dictionary
         '''
         user_dict={}
-        print("usertuple",user_tuple, user_tuple[0], type(user_tuple[1]))
+        #print("usertuple",user_tuple, user_tuple[0], type(user_tuple[1]))
         if user_tuple:
             user_dict["id"]=user_tuple[0]
             user_dict["email"]=user_tuple[1]
@@ -170,6 +188,7 @@ if __name__ == '__main__':
     results = Users.create(user_details)
     #print(results, type(results))
 
-    Users.exists('justingohde')
+    print(Users.exists(username='justingohde'))
+    print(Users.exists(id=8237105982883065))
     #Users.get('justingohde')
     
