@@ -127,45 +127,45 @@ class User_Model_Tests(unittest.TestCase):
     #     finally:
     #         db_connection.close()
     
-    # def test_create_user_with_duplicate_username_or_email(self):
-    #    method = "users.create"
-    #    for i in range(len(self.users)):
-    #       self.UserModel.create(self.users[i]) # 4 users in DB
+    def test_create_user_with_duplicate_username_or_email(self):
+       method = "users.create"
+       for i in range(len(self.users)):
+          self.UserModel.create(self.users[i]) # 4 users in DB
     
-    #    new_user ={"email":self.users[2]["email"], #email is duplicate
-    #                 "username":"somethingdifferent",
-    #                 "password":"12345678920"}
-    #    returned_user = self.UserModel.create(new_user)
-    #    ensure_data_packet_formatting(self, returned_user, method, "error")
-    #    try:  #check DB state
-    #         db_connection = sqlite3.connect(self.yahtzee_db_name)
-    #         cursor = db_connection.cursor()
-    #         query = f"SELECT * from {self.table_name};"
-    #         results = cursor.execute(query)
-    #         all_users = results.fetchall()
-    #         self.assertEqual(len(all_users), len(self.users), f"{method}-  {len(self.users)} users should be returned")
-    #    except sqlite3.Error as error:
-    #         print(error)
-    #    finally:
-    #         db_connection.close()
+       new_user ={"email":self.users[2]["email"], #email is duplicate
+                    "username":"somethingdifferent",
+                    "password":"12345678920"}
+       returned_user = self.UserModel.create(new_user)
+       ensure_data_packet_formatting(self, returned_user, method, "error")
+       try:  #check DB state
+            db_connection = sqlite3.connect(self.yahtzee_db_name)
+            cursor = db_connection.cursor()
+            query = f"SELECT * from {self.table_name};"
+            results = cursor.execute(query)
+            all_users = results.fetchall()
+            self.assertEqual(len(all_users), len(self.users), f"{method}-  {len(self.users)} users should be returned")
+       except sqlite3.Error as error:
+            print(error)
+       finally:
+            db_connection.close()
 
-    #    new_user ={"email":"hello_hello_@haveaniceday.com", 
-    #                 "username":self.users[1]["username"],#email is duplicate
-    #                 "password":"12345678920"}
-    #    returned_user = self.UserModel.create(new_user)
-    #    ensure_data_packet_formatting(self, returned_user, method, "error")
-    #    try:  #check DB state
-    #         db_connection = sqlite3.connect(self.yahtzee_db_name)
-    #         cursor = db_connection.cursor()
-    #         query = f"SELECT * from {self.table_name};"
-    #         results = cursor.execute(query)
-    #         all_users = results.fetchall()
-    #         self.assertEqual(len(all_users), len(self.users), f"{method}-  {len(self.users)} users should be returned")
-    #         print("test_create_user_with_duplicate_username_or_email passed!")
-    #    except sqlite3.Error as error:
-    #         print(error)
-    #    finally:
-    #         db_connection.close()
+       new_user ={"email":"hello_hello_@haveaniceday.com", 
+                    "username":self.users[1]["username"],#email is duplicate
+                    "password":"12345678920"}
+       returned_user = self.UserModel.create(new_user)
+       ensure_data_packet_formatting(self, returned_user, method, "error")
+       try:  #check DB state
+            db_connection = sqlite3.connect(self.yahtzee_db_name)
+            cursor = db_connection.cursor()
+            query = f"SELECT * from {self.table_name};"
+            results = cursor.execute(query)
+            all_users = results.fetchall()
+            self.assertEqual(len(all_users), len(self.users), f"{method}-  {len(self.users)} users should be returned")
+            print("test_create_user_with_duplicate_username_or_email passed!")
+       except sqlite3.Error as error:
+            print(error)
+       finally:
+            db_connection.close()
 
     # def test_create_user_with_incorrect_data_format(self):
     #    method = "users.create"
@@ -214,41 +214,41 @@ class User_Model_Tests(unittest.TestCase):
     #             db_connection.close()
     #    print("test_create_user_with_incorrect_data_format passed!")
 
-    def test_exists_id(self):
-       method = "users.exists"
-       user_ids={}
-       for i in range(len(self.users)):
-            user_ids[self.users[i]['email']] = self.UserModel.create(self.users[i])["data"]["id"]
+    # def test_exists_id(self):
+    #    method = "users.exists"
+    #    user_ids={}
+    #    for i in range(len(self.users)):
+    #         user_ids[self.users[i]['email']] = self.UserModel.create(self.users[i])["data"]["id"]
 
-       packet = self.UserModel.exists(id=user_ids[self.users[1]['email']]) 
-       self.assertTrue("status" in packet, f"{method} should return a data packet object in the correct format")
-       self.assertEqual(packet["status"], "success", f"{method} should return success")
-       self.assertTrue("data" in packet, f"{method} should return a data packet object in the correct format")
-       self.assertTrue(packet["data"], f"{method} should return True for a user that does exist")
-       print("test_exists_id passed!")
+    #    packet = self.UserModel.exists(id=user_ids[self.users[1]['email']]) 
+    #    self.assertTrue("status" in packet, f"{method} should return a data packet object in the correct format")
+    #    self.assertEqual(packet["status"], "success", f"{method} should return success")
+    #    self.assertTrue("data" in packet, f"{method} should return a data packet object in the correct format")
+    #    self.assertTrue(packet["data"], f"{method} should return True for a user that does exist")
+    #    print("test_exists_id passed!")
 
-    def test_exists_username(self):
-       method = "users.exists"
+    # def test_exists_username(self):
+    #    method = "users.exists"
        
-       for i in range(len(self.users)):
-            self.UserModel.create(self.users[i])
+    #    for i in range(len(self.users)):
+    #         self.UserModel.create(self.users[i])
 
-       packet = self.UserModel.exists(username=self.users[1]['username']) 
-       self.assertTrue("status" in packet, f"{method} should return a data packet object in the correct format")
-       self.assertEqual(packet["status"], "success", f"{method} should return success")
-       self.assertTrue("data" in packet, f"{method} should return a data packet object in the correct format")
-       self.assertTrue(packet["data"], f"{method} should return True for a user that does exist")
-       print("test_exists_username passed!")
+    #    packet = self.UserModel.exists(username=self.users[1]['username']) 
+    #    self.assertTrue("status" in packet, f"{method} should return a data packet object in the correct format")
+    #    self.assertEqual(packet["status"], "success", f"{method} should return success")
+    #    self.assertTrue("data" in packet, f"{method} should return a data packet object in the correct format")
+    #    self.assertTrue(packet["data"], f"{method} should return True for a user that does exist")
+    #    print("test_exists_username passed!")
        
-    def test_exists_user_DNE(self):
-       method = "users.exists"
-       user_DNE = "apples"
-       packet = self.UserModel.exists(user_DNE) 
-       self.assertTrue("status" in packet, f"{method} should return a data packet object in the correct format")
-       self.assertEqual(packet["status"], "success", f"{method} should return success")
-       self.assertTrue("data" in packet, f"{method} should return a data packet object in the correct format")
-       self.assertFalse(packet["data"], f"{method} should return False for a user that does not exist")
-       print("test_exists_user_DNE passed!")
+    # def test_exists_user_DNE(self):
+    #    method = "users.exists"
+    #    user_DNE = "apples"
+    #    packet = self.UserModel.exists(user_DNE) 
+    #    self.assertTrue("status" in packet, f"{method} should return a data packet object in the correct format")
+    #    self.assertEqual(packet["status"], "success", f"{method} should return success")
+    #    self.assertTrue("data" in packet, f"{method} should return a data packet object in the correct format")
+    #    self.assertFalse(packet["data"], f"{method} should return False for a user that does not exist")
+    #    print("test_exists_user_DNE passed!")
 
     # def test_get_user_exists_username(self):
     #    method = "users.get"

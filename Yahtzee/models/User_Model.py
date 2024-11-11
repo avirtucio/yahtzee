@@ -55,19 +55,44 @@ class User:
             user_id = random.randint(0, self.max_safe_id)
 
             # TODO: check to see if id already exists!!
+            # print("user_info", user_info)
+            # print(user_info["username"])
+            # print(self.exists(username=user_info["username"])["data"])
 
             if ((self.exists(id=user_id)["data"] == False) and (self.exists(username=user_info["username"])["data"] == False)):
                 user_data = (user_id, user_info["email"], user_info["username"], user_info["password"])
                 #are you sure you have all data in the correct format?
-                cursor.execute(f"INSERT INTO {self.table_name} VALUES (?, ?, ?, ?);", user_data)
-                db_connection.commit()
-                
-                return {"status": "success",
-                    "data": self.to_dict(user_data)
-                    }
+                username_check = True
+                for character in user_data[2]:
+                    if ((character.isalnum() == False) and (character != "_") and (character != "-")):
+                        username_check = False
+                        break
+                password_check = True
+                if (len(user_data[3]) < 8):
+                    password_check = False
+                email_check = True
+                email_array = list(user_data[1])
+                if ((" " in email_array) or ("@" not in email_array) or("." not in email_array)):
+                    email_check = False
+
+                email_list = cursor.execute(f"SELECT email FROM {self.table_name};").fetchall()
+                if user_data[1] in email_list:
+                    email_check = False
+
+                if ((username_check == True) and (password_check == True) and (email_check == True)):
+                    cursor.execute(f"INSERT INTO {self.table_name} VALUES (?, ?, ?, ?);", user_data)
+                    db_connection.commit()
+                    
+                    return {"status": "success",
+                        "data": self.to_dict(user_data)
+                        }
+                else:
+                    return {"status": "error",
+                        "data": "either bad email bad username or bad password"
+                        }
             else:
                 return {"status": "error",
-                    "data": "dslkjfl;aksdj"
+                    "data": "something either id or username already exists"
                     }
         
         except sqlite3.Error as error:
@@ -86,9 +111,12 @@ class User:
                 print('username', username)
                 if (self.exists(username=username) == True):
                     results = cursor.execute(f"SELECT * FROM {self.table_name} WHERE username = '{username}';").fetchall()
-                    #print(results[0])
+                    print("usernamE:", results, type(results))
+                    print(self.to_dict(results[0]))
                     return {"status":"success",
                     "data":self.to_dict(results[0])}
+                else:
+                    print("userexists failing")
             elif (id):
                 if (self.exists(id=id) == True):
                     results = cursor.execute(f"SELECT * FROM {self.table_name} WHERE id = '{id}';").fetchall()
@@ -180,15 +208,28 @@ if __name__ == '__main__':
     Users = User(DB_location, table_name) 
     Users.initialize_table()
 
-    user_details={
-        "email":"justin.gohde@trinityschoolnyc.org",
-        "username":"justingohde",
-        "password":"123TriniT"
-    }
-    results = Users.create(user_details)
-    #print(results, type(results))
+    # user_details={
+    #     "email":"justin.gohde@trinityschoolnyc.org",
+    #     "username":"justingohde",
+    #     "password":"123TriniT"
+    # }
+    # results = Users.create(user_details)
 
-    print(Users.exists(username='justingohde'))
-    print(Users.exists(id=8237105982883065))
-    #Users.get('justingohde')
+    user_details={"email": "hey_hey@haveaniceday.com", 
+                    "username":"something_different",  # bad username
+                    "password":"123456789"}
+    results = Users.create(user_details)
+
+    print(results, type(results))
+
+    user_details2 = {"email": "hey_hey@haveaniceday.com", 
+                    "username":"sasdfasdfnt",  # bad username
+                    "password":"1alsdkfjlaskdjf9"}
+    results = Users.create(user_details2)
+
+    print(results, type(results))
+
+    # print(Users.exists(username='justingohde'))
+    # print(Users.exists(id=8237105982883065))
+    # print(Users.get('justingohde'))
     
