@@ -55,10 +55,7 @@ class User:
             user_id = random.randint(0, self.max_safe_id)
 
             # TODO: check to see if id already exists!!
-            # print("user_info", user_info)
-            # print(user_info["username"])
-            # print(self.exists(username=user_info["username"])["data"])
-
+            
             if ((self.exists(id=user_id)["data"] == False) and (self.exists(username=user_info["username"])["data"] == False)):
                 user_data = (user_id, user_info["email"], user_info["username"], user_info["password"])
                 #are you sure you have all data in the correct format?
@@ -75,7 +72,10 @@ class User:
                 if ((" " in email_array) or ("@" not in email_array) or("." not in email_array)):
                     email_check = False
 
-                email_list = cursor.execute(f"SELECT email FROM {self.table_name};").fetchall()
+                email_list = []
+                results = cursor.execute(f"SELECT email FROM {self.table_name};").fetchall()
+                for tuple in results:
+                    email_list.append(tuple[0])
                 if user_data[1] in email_list:
                     email_check = False
 
@@ -108,24 +108,21 @@ class User:
             cursor = db_connection.cursor()
         ####### check if exists first
             if (username):
-                print('username', username)
-                if (self.exists(username=username) == True):
+                if (self.exists(username=username)["data"] == True):
                     results = cursor.execute(f"SELECT * FROM {self.table_name} WHERE username = '{username}';").fetchall()
-                    print("usernamE:", results, type(results))
-                    print(self.to_dict(results[0]))
                     return {"status":"success",
                     "data":self.to_dict(results[0])}
                 else:
-                    print("userexists failing")
+                    return {"status":"error",
+                    "data":"user name doesnt exist"}
             elif (id):
-                if (self.exists(id=id) == True):
+                if (self.exists(id=id)["data"] == True):
                     results = cursor.execute(f"SELECT * FROM {self.table_name} WHERE id = '{id}';").fetchall()
-                    #print(results[0])
                     return {"status":"success",
                     "data":self.to_dict(results[0])}
             else:
-                return {"status":"success",
-                    "data":"user doesnt exist"}
+                return {"status":"error",
+                    "data":"user id doesnt exist"}
         #######
         except sqlite3.Error as error:
             return {"status":"error",
@@ -138,10 +135,13 @@ class User:
             db_connection = sqlite3.connect(self.db_name)
             cursor = db_connection.cursor()
 
+            user_info_list = []
             results = cursor.execute(f"SELECT * FROM {self.table_name};").fetchall()
-            print(results)
+            for user_tuple in results:
+                user_info_list.append(self.to_dict(user_tuple))
+            
             return {"status":"success",
-                    "data":results}
+                    "data":user_info_list}
         
         except sqlite3.Error as error:
             return {"status":"error",
@@ -153,16 +153,18 @@ class User:
         try: 
             db_connection = sqlite3.connect(self.db_name)
             cursor = db_connection.cursor()
-            '''
-                Insert your code here
-            '''
-            for element in user_info:
-                if (element != "id"):
-                    cursor.execute(f"UPDATE {self.table_name} SET {element}='{user_info[element]}' WHERE id = '{user_info['id']}'")
-                    db_connection.commit()
-            
-            return {"status":"success",
-                    "data":self.to_dict(self.get(id=user_info['id'])['data'])}
+
+            if (self.exists(id=user_info["id"])["data"] == True):
+                for element in user_info:
+                    if (element != "id"):
+                        cursor.execute(f"UPDATE {self.table_name} SET {element}='{user_info[element]}' WHERE id = '{user_info['id']}'")
+                        db_connection.commit()
+
+                return {"status":"success",
+                        "data":self.get(id=user_info['id'])["data"]}
+            else:
+                return {"status":"error",
+                        "data":"user doesnt exist"}
 
         except sqlite3.Error as error:
             return {"status":"error",
@@ -174,11 +176,17 @@ class User:
         try: 
             db_connection = sqlite3.connect(self.db_name)
             cursor = db_connection.cursor()
-            '''
-                Insert your code here
-            '''
-            cursor.execute(f"DELETE FROM {self.table_name} WHERE username = '{username}';")
-            db_connection.commit()
+            
+            if (self.exists(username=username)["data"] == True):
+                deleted_user = self.get(username=username)["data"]
+                cursor.execute(f"DELETE FROM {self.table_name} WHERE username = '{username}';")
+                db_connection.commit()
+
+                return {"status":"success",
+                        "data":deleted_user}
+            else:
+                return {"status":"error",
+                    "data":"user name doesnt exist"}
 
         except sqlite3.Error as error:
             return {"status":"error",
@@ -208,28 +216,20 @@ if __name__ == '__main__':
     Users = User(DB_location, table_name) 
     Users.initialize_table()
 
-    # user_details={
+    user_details={
+        "email":"justin.gohde@trinityschoolnyc.org",
+        "username":"justingohde",
+        "password":"123TriniT"
+    }
+    results = Users.create(user_details)
+    # id = results["data"]["id"]
+    # print(results, id)
+
+    # new_user_details={
+    #     "id": id,
     #     "email":"justin.gohde@trinityschoolnyc.org",
-    #     "username":"justingohde",
+    #     "username":"justingohdeeeeeee",
     #     "password":"123TriniT"
     # }
-    # results = Users.create(user_details)
-
-    user_details={"email": "hey_hey@haveaniceday.com", 
-                    "username":"something_different",  # bad username
-                    "password":"123456789"}
-    results = Users.create(user_details)
-
-    print(results, type(results))
-
-    user_details2 = {"email": "hey_hey@haveaniceday.com", 
-                    "username":"sasdfasdfnt",  # bad username
-                    "password":"1alsdkfjlaskdjf9"}
-    results = Users.create(user_details2)
-
-    print(results, type(results))
-
-    # print(Users.exists(username='justingohde'))
-    # print(Users.exists(id=8237105982883065))
-    # print(Users.get('justingohde'))
     
+    print(Users.remove("justingohde"))
