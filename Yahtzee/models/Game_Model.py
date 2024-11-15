@@ -2,6 +2,7 @@
 
 import sqlite3
 import random
+from datetime import datetime
 
 class Game:
     def __init__(self, db_name, table_name):
@@ -57,7 +58,8 @@ class Game:
             # TODO: check to see if id already exists!!
             
             if ((self.exists(id=game_id)["data"] == False) and (self.exists(game_info["name"])["data"] == False)):
-                game_data = (game_id, game_info["name"])
+                createddate= datetime.now()
+                game_data = (game_id, game_info["name"], createddate, createddate)
                 #are you sure you have all data in the correct format?
                 gamename_check = True
                 for character in game_data[1]:
@@ -66,18 +68,16 @@ class Game:
                         break
 
                 if (gamename_check == True):
-                    cursor.execute(f"INSERT INTO {self.table_name} (id, name) VALUES (?, ?);", game_data)
+                    cursor.execute(f"INSERT INTO {self.table_name} VALUES (?, ?, ?, ?);", game_data)
                     db_connection.commit()
 
-                    print("aboutta check results")
-                    results = cursor.execute(f"SELECT name FROM {self.table_name} WHERE name = {game_info["name"]};", game_data).fetchall()
-                    print(results)
-
-
+                    results = cursor.execute(f"SELECT * FROM {self.table_name} WHERE name = '{game_data[1]}';").fetchall()
+                
                     return {"status": "success",
-                        "data": self.to_dict(results)
+                        "data": self.to_dict(results[0])
                         }
                 else:
+                    print("game name not valid")
                     return {"status": "error",
                         "data": "either bad email bad username or bad password"
                         }
@@ -111,9 +111,9 @@ class Game:
                     results = cursor.execute(f"SELECT * FROM {self.table_name} WHERE name = '{game_name}';").fetchall()
                     return {"status":"success",
                     "data":self.to_dict(results[0])}
-            else:
-                return {"status":"error",
-                    "data":"game name doesnt exist"}
+                else:
+                    return {"status":"error",
+                        "data":"game name doesnt exist"}
         #######
         except sqlite3.Error as error:
             return {"status":"error",
@@ -148,8 +148,16 @@ class Game:
             if (self.exists(id=game_info["id"])["data"] == True):
                 for element in game_info:
                     if (element != "id"):
-                        cursor.execute(f"UPDATE {self.table_name} SET {element}='{game_info[element]}' WHERE id = '{game_info['id']}'")
-                        db_connection.commit()
+                        if(self.get(id=game_info["id"])["data"]["name"] != game_info["name"]): #if trying to hanfge game name
+                            if(self.exists(game_name=game_info["name"])["data"] == True): #if new name already exists
+                                return {"status":"error",
+                                    "data":"game name already exists"}
+                            else:
+                                cursor.execute(f"UPDATE {self.table_name} SET {element}='{game_info[element]}' WHERE id = '{game_info['id']}'")
+                                db_connection.commit()
+                        else:
+                            cursor.execute(f"UPDATE {self.table_name} SET {element}='{game_info[element]}' WHERE id = '{game_info['id']}'")
+                            db_connection.commit()
 
                 return {"status":"success",
                         "data":self.get(id=game_info['id'])["data"]}
@@ -169,12 +177,12 @@ class Game:
             cursor = db_connection.cursor()
 
             if (self.exists(game_name=game_name)["data"] == True):
-                if (self.get(game_name=game_name)["data"]["created"] == self.get(game_name=game_name)["data"]["finished"]):
+                if (self.get(game_name=game_name)["data"]["created"] != self.get(game_name=game_name)["data"]["finished"]):
                     return {"status":"success",
                     "data":True}
-            else:
-                return {"status":"success",
-                    "data":False}
+                else:
+                    return {"status":"success",
+                        "data":False}
         
         except sqlite3.Error as error:
             return {"status":"error",
@@ -209,13 +217,13 @@ class Game:
            into a Python dictionary
         '''
         game_dict={}
-        print("to_dict:", game_tuple)
+        #print("to_dict:", game_tuple)
         #print("usertuple",user_tuple, user_tuple[0], type(user_tuple[1]))
         if game_tuple:
             game_dict["id"]=game_tuple[0]
             game_dict["name"]=game_tuple[1]
-            game_dict["created"]=game_tuple[2]
-            game_dict["finished"]=game_tuple[3]
+            game_dict["created"]=str(game_tuple[2])
+            game_dict["finished"]=str(game_tuple[3])
         return game_dict
 
 if __name__ == '__main__':
@@ -227,12 +235,12 @@ if __name__ == '__main__':
     Game = Game(DB_location, table_name) 
     Game.initialize_table()
 
-    game_details={
-        "name": "aosdjkgaskdldsakjg"
-    }
-    results = Game.create(game_details)
-    # id = results["data"]["id"]
-    print(results)
+    # game_details={
+    #     "name": "aosdjkgaskdldsakjg"
+    # }
+    # results = Game.create(game_details)
+    # # id = results["data"]["id"]
+    # print(results)
 
     # new_user_details={
     #     "id": id,
@@ -240,5 +248,19 @@ if __name__ == '__main__':
     #     "username":"justingohdeeeeeee",
     #     "password":"123TriniT"
     # }
+
+    games =[]
+    for i in range(5):
+        games.append({"name":f"ourGame{i}"})
     
+    returned_games = {}
+    for i in range(4):
+        game = Game.create(games[i])
+        returned_games[game['data']["name"]] = game["data"]
+    
+
+    #print(returned_games)
+
+    print(Game.get_all())
+
     
