@@ -38,10 +38,38 @@ class Scorecard:
             db_connection = sqlite3.connect(self.db_name)
             cursor = db_connection.cursor()
             card_id = random.randint(0, self.max_safe_id)
+            categories_dict = {
+                "dice_rolls":0,
+                "upper":{
+                    "ones":-1,
+                    "twos":-1,
+                    "threes":-1,
+                    "fours":-1,
+                    "fives":-1,
+                    "sixes":-1
+                },
+                "lower":{
+                "three_of_a_kind":-1,
+                    "four_of_a_kind":-1,
+                    "full_house":-1,
+                    "small_straight":-1,
+                    "large_straight":-1,
+                    "yahtzee":-1,
+                    "chance":-1
+                }
+            }
+            categories_string = json.dumps(categories_dict)
 
-            scorecard_data = [card_id, game_id, user_id, categories, turn_order, f"{game_name}|{user_name}"]
+            results = cursor.execute(f"SELECT * FROM {self.table_name} WHERE game_id = {game_id};").fetchall()
+            current_players_count = len(results)
+            turn_order = current_players_count + 1
+
+            scorecard_data = [card_id, game_id, user_id, categories_string, turn_order, name]
             cursor.execute(f"INSERT INTO {self.table_name} VALUES (?, ?, ?, ?, ?, ?);", scorecard_data)
             db_connection.commit()
+
+            return {"status":"success",
+                    "data":self.get(id=card_id)["data"]}
 
         except sqlite3.Error as error:
             return {"status":"error",
@@ -54,6 +82,23 @@ class Scorecard:
             db_connection = sqlite3.connect(self.db_name)
             cursor = db_connection.cursor()
 
+            if (name):
+                results = cursor.execute(f"SELECT * FROM {self.table_name} WHERE name = '{name}';").fetchall()
+                if (results):
+                    return {"status":"success",
+                        "data":self.to_dict(results[0])}
+                else:
+                    return {"status":"error",
+                        "data":"scorecard does not exist"}
+            elif (id):
+                results = cursor.execute(f"SELECT * FROM {self.table_name} WHERE id = {id};").fetchall()
+                if (results):
+                    return {"status":"success",
+                        "data":self.to_dict(results[0])}
+                else:
+                    return {"status":"error",
+                        "data":"scorecard does not exist"}
+
         except sqlite3.Error as error:
             return {"status":"error",
                     "data":error}
@@ -64,6 +109,13 @@ class Scorecard:
         try: 
             db_connection = sqlite3.connect(self.db_name)
             cursor = db_connection.cursor()
+
+            card_array = []
+            results = cursor.execute(f"SELECT * FROM {self.table_name};").fetchall()
+            for card_tuple in results:
+                card_array.append(self.to_dict(card_tuple))
+            return {"status":"success",
+                    "data":card_array}
 
         except sqlite3.Error as error:
             return {"status":"error",
