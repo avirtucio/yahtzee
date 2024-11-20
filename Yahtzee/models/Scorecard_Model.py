@@ -128,6 +128,13 @@ class Scorecard:
             db_connection = sqlite3.connect(self.db_name)
             cursor = db_connection.cursor()
 
+            all_cards = self.get_all()["data"]
+            for card in all_cards:
+                card_game_name = card["name"].split("|")[1]
+                if (card_game_name == game_name):
+                    
+                
+
         except sqlite3.Error as error:
             return {"status":"error",
                     "data":error}
