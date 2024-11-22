@@ -128,13 +128,15 @@ class Scorecard:
             db_connection = sqlite3.connect(self.db_name)
             cursor = db_connection.cursor()
 
+            scorecard_list = []
             all_cards = self.get_all()["data"]
             for card in all_cards:
                 card_game_name = card["name"].split("|")[1]
                 if (card_game_name == game_name):
-                    
+                    scorecard_list.append(card["name"])
+            
+            return {"status":"success", "data":scorecard_list}
                 
-
         except sqlite3.Error as error:
             return {"status":"error",
                     "data":error}
@@ -146,6 +148,15 @@ class Scorecard:
             db_connection = sqlite3.connect(self.db_name)
             cursor = db_connection.cursor()
 
+            username_list = []
+            all_cards = self.get_all()["data"]
+            for card in all_cards:
+                card_user_name = card["name"].split("|")[0]
+                if (card_user_name == game_name):
+                    username_list.append(card["name"])
+            
+            return {"status":"success", "data":username_list}
+
         except sqlite3.Error as error:
             return {"status":"error",
                     "data":error}
@@ -156,6 +167,15 @@ class Scorecard:
         try: 
             db_connection = sqlite3.connect(self.db_name)
             cursor = db_connection.cursor()
+            
+            game_list = []
+            all_cards = self.get_all()["data"]
+            for card in all_cards:
+                card_user_name = card["name"].split("|")[1]
+                if (card_user_name == username):
+                    game_list.append(card["name"].split("|")[0])
+            
+            return {"status":"success", "data":game_list}
 
         except sqlite3.Error as error:
             return {"status":"error",
@@ -163,10 +183,25 @@ class Scorecard:
         finally:
             db_connection.close()
 
-    def update(self, id, name=None, score_info=None): 
+    def update(self, id, name=None, categories=None): 
         try: 
             db_connection = sqlite3.connect(self.db_name)
             cursor = db_connection.cursor()
+
+            results = cursor.execute(f"SELECT * FROM {self.table_name} WHERE id = {id};").fetchall()
+            if (results):
+                if (name):
+                    cursor.execute(f"UPDATE {self.table_name} SET name ='{name}' WHERE id = {id};")
+                    db_connection.commit()
+                if (categories):
+                    cursor.execute(f"UPDATE {self.table_name} SET categories ='{json.dumps(categories)}' WHERE id = {id};")
+                    db_connection.commit()
+
+                return {"status":"success",
+                        "data":self.get(id=id)["data"]}
+            else:
+                return {"status":"error", 
+                 "data":"score card doesnt exist"}
 
         except sqlite3.Error as error:
             return {"status":"error",
@@ -178,6 +213,18 @@ class Scorecard:
         try: 
             db_connection = sqlite3.connect(self.db_name)
             cursor = db_connection.cursor()
+
+            results = cursor.execute(f"SELECT * FROM {self.table_name} WHERE id = {id};").fetchall()
+            if (results):
+                deleted_game = self.get(id=id)["data"]
+                cursor.execute(f"DELETE FROM {self.table_name} WHERE id = {id};")
+                db_connection.commit()
+
+                return {"status":"success", 
+                        "data":deleted_game}
+            else:
+                return {"status":"error", 
+                        "data":"score card doesnt exist"}
 
         except sqlite3.Error as error:
             return {"status":"error",
@@ -234,3 +281,5 @@ if __name__ == '__main__':
     Games.initialize_table()
     Scorecards = Scorecard(DB_location, "scorecards", "users", "games")
     Scorecards.initialize_table()
+
+    Scorecards.update()

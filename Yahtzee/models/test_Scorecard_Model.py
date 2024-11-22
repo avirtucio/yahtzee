@@ -110,6 +110,26 @@ class Scorecard_Model_Tests(unittest.TestCase):
                 "chance":-1
             }
         }
+        self.partial_card={
+            "rolls_remaining":2,
+            "upper":{
+                "one":4,
+                "two":8,
+                "three":-1,
+                "four":-1,
+                "five":-1,
+                "six":24
+            },
+            "lower":{
+                "three_of_a_kind":-1,
+                "four_of_a_kind":26,
+                "full_house":-1,
+                "small_straight":0,
+                "large_straight":40,
+                "yahtzee":0,
+                "chance":8
+            }
+        }
 
     # def test_create_1_scorecard(self):
     #     method = "scorecard.create"
@@ -215,77 +235,41 @@ class Scorecard_Model_Tests(unittest.TestCase):
     #     finally:
     #         db_connection.close()
     
-    # def create_too_many_scorecards_same_game_different_users(self):
-    #     method = "scorecard.create"
-    #     #setup
+    # def test_create_too_many_scorecards_same_game_different_users(self):
+    #     method="scorecard.create"
+    #     all_scorecards = []
+    #     game = list(self.games.values())[0]
 
-    #     #invoke method
-
-    #     #check returned object
-    #     self.assertEqual(False, True)
+    #     for i in range(len(self.users)):
+    #         user = list(self.users.values())[i]
+    #         new_scorecard = self.ScorecardModel.create(game["id"], user["id"], game["name"]+"|"+user["username"])
+    #         all_scorecards.append(new_scorecard["data"])
+    #     all_scorecards.sort(key=lambda scorecard: scorecard["id"])
         
-    #     #check DB state
-    #     try: 
-    #         db_connection = sqlite3.connect(self.yahtzee_db_name)
-    #         cursor = db_connection.cursor()
-    #         query = f"SELECT * from {self.table_name};"
-    #         results = cursor.execute(query)
-
-    #         for game in results.fetchall():
-    #             self.assertEqual(False, True)
-    #         print(" passed!")  
-    #     except sqlite3.Error as error:
-    #         print(error)
-    #     finally:
-    #         db_connection.close()
-    
-    # def create_too_many_scorecards_same_game_same_user(self):
-    #     method = "scorecard.create"
-    #     #setup
-
-    #     #invoke method
-
-    #     #check returned object
-    #     self.assertEqual(False, True)
+    #     new_user_info ={"email":"bowser_official@trinityschoolnyc.org",
+    #                     "username":"bowser_official",
+    #                     "password":"IamBOWSER4Real"}
+    #     new_user = self.UserModel.create(new_user_info)['data']
+    #     new_scorecard = self.ScorecardModel.create(game["id"], new_user["id"], game["name"]+"|"+new_user["username"])
+    #     ensure_data_packet_formatting(self, new_scorecard, method, "error") #max of 4 players per game
         
-    #     #check DB state
-    #     try: 
-    #         db_connection = sqlite3.connect(self.yahtzee_db_name)
-    #         cursor = db_connection.cursor()
-    #         query = f"SELECT * from {self.table_name};"
-    #         results = cursor.execute(query)
+    #     all_scorecards_returned = self.ScorecardModel.get_all()['data']
+    #     self.assertTrue(len(all_scorecards_returned)==len(all_scorecards)) #scorecard has not been added to DB
+    #     print("test_create_too_many_scorecards_same_game_different_users passed!")  
 
-    #         for game in results.fetchall():
-    #             self.assertEqual(False, True)
-    #         print(" passed!")  
-    #     except sqlite3.Error as error:
-    #         print(error)
-    #     finally:
-    #         db_connection.close()
-    
-    # def create_scorecard_incorrect_data_format(self):
+    # def test_create_too_many_scorecards_same_game_same_user(self):
     #     method = "scorecard.create"
-    #     #setup
+    #     user = list(self.users.values())[0]
+    #     game = list(self.games.values())[0]
+    #     new_scorecard_1 = self.ScorecardModel.create(game["id"], user["id"], game["name"]+"|"+user["username"])
+    #     ensure_data_packet_formatting(self, new_scorecard_1, method, "success")
+    #     #add new scorecard to same game with same user
+    #     new_scorecard_2 = self.ScorecardModel.create(game["id"], user["id"], game["name"]+"|"+user["username"])
+    #     ensure_data_packet_formatting(self, new_scorecard_2, method, "error")
 
-    #     #invoke method
-
-    #     #check returned object
-    #     self.assertEqual(False, True)
-        
-    #     #check DB state
-    #     try: 
-    #         db_connection = sqlite3.connect(self.yahtzee_db_name)
-    #         cursor = db_connection.cursor()
-    #         query = f"SELECT * from {self.table_name};"
-    #         results = cursor.execute(query)
-
-    #         for game in results.fetchall():
-    #             self.assertEqual(False, True)
-    #         print(" passed!")  
-    #     except sqlite3.Error as error:
-    #         print(error)
-    #     finally:
-    #         db_connection.close()
+    #     all_scorecards_returned = self.ScorecardModel.get_all()['data']
+    #     self.assertTrue(len(all_scorecards_returned)==1) #scorecard has not been added to DB
+    #     print("test_create_too_many_scorecards_same_game_same_user passed!")  
     
     # def test_get_scorecard_exists_id(self):
     #     method = "scorecard.get"
@@ -536,77 +520,58 @@ class Scorecard_Model_Tests(unittest.TestCase):
     #         self.assertIn(game_name_to_check, all_user_game_names['data'])
     #     print("test_get_all_user_game_names_many_games passed!") 
         
-    # def update_scorecard_exists(self):
+    # def test_update_scorecard_exists(self):
+    #     #only tests updating categories since that will be the way we use update in pur project
     #     method = "scorecard.update"
-    #     #setup
-
-    #     #invoke method
-
-    #     #check returned object
-    #     self.assertEqual(False, True)
+    #     all_scorecards=[]
+    #     for i in range(len(self.users)): #4 games with 1 scorecard each
+    #         user = list(self.users.values())[i]
+    #         game = list(self.games.values())[i]
+ 
+    #         new_scorecard = self.ScorecardModel.create(game["id"], user["id"], game["name"]+"|"+user["username"])
+    #         all_scorecards.append(new_scorecard["data"])
+    #     all_scorecards.sort(key=lambda scorecard: scorecard["id"])
         
+    #     returned_card = self.ScorecardModel.update(id=all_scorecards[0]["id"], name=all_scorecards[0]["name"], categories=self.partial_card)
+        
+    #     ensure_data_packet_formatting(self, returned_card, method, "success")
+    #     self.assertEqual(returned_card['data']['id'],all_scorecards[0]['id'])
+    #     self.assertEqual(returned_card['data']['game_id'],all_scorecards[0]['game_id'])
+    #     self.assertEqual(returned_card['data']['user_id'],all_scorecards[0]['user_id'])
+    #     self.assertEqual(returned_card['data']['name'],all_scorecards[0]['name'])
+    #     self.assertEqual(returned_card['data']['turn_order'],all_scorecards[0]['turn_order'])
+    #     self.assertEqual(returned_card['data']['categories'],self.partial_card)
     #     #check DB state
     #     try: 
     #         db_connection = sqlite3.connect(self.yahtzee_db_name)
     #         cursor = db_connection.cursor()
-    #         query = f"SELECT * from {self.table_name};"
+    #         query = f"SELECT * from {self.scorecard_table_name} WHERE id = {all_scorecards[0]['id']};"
     #         results = cursor.execute(query)
+    #         result = results.fetchall()[0]
 
-    #         for game in results.fetchall():
-    #             self.assertEqual(False, True)
-    #         print(" passed!")  
+    #         self.assertEqual(result[0],all_scorecards[0]['id'])
+    #         self.assertEqual(result[1],all_scorecards[0]['game_id'])
+    #         self.assertEqual(result[2],all_scorecards[0]['user_id'])
+    #         self.assertEqual(result[3],json.dumps(self.partial_card))
+    #         self.assertEqual(result[4],all_scorecards[0]['turn_order'])
+    #         self.assertEqual(result[5],all_scorecards[0]['name'])
+            
+    #         print("test_update_scorecard_exists passed!")  
     #     except sqlite3.Error as error:
     #         print(error)
     #     finally:
     #         db_connection.close()
     
-    # def update_scorecard_DNE(self):
+    # def test_update_scorecard_DNE(self):
     #     method = "scorecard.update"
-    #     #setup
-
-    #     #invoke method
-
-    #     #check returned object
-    #     self.assertEqual(False, True)
         
-    #     #check DB state
-    #     try: 
-    #         db_connection = sqlite3.connect(self.yahtzee_db_name)
-    #         cursor = db_connection.cursor()
-    #         query = f"SELECT * from {self.table_name};"
-    #         results = cursor.execute(query)
-
-    #         for game in results.fetchall():
-    #             self.assertEqual(False, True)
-    #         print(" passed!")  
-    #     except sqlite3.Error as error:
-    #         print(error)
-    #     finally:
-    #         db_connection.close()
-    
-    # def update_scorecard_incorrect_data_format(self):
-    #     method = "scorecard.update"
-    #     #setup
-
-    #     #invoke method
-
-    #     #check returned object
-    #     self.assertEqual(False, True)
-        
-    #     #check DB state
-    #     try: 
-    #         db_connection = sqlite3.connect(self.yahtzee_db_name)
-    #         cursor = db_connection.cursor()
-    #         query = f"SELECT * from {self.table_name};"
-    #         results = cursor.execute(query)
-
-    #         for game in results.fetchall():
-    #             self.assertEqual(False, True)
-    #         print(" passed!")  
-    #     except sqlite3.Error as error:
-    #         print(error)
-    #     finally:
-    #         db_connection.close()
+    #     scorecard_name=self.games_info[0]['name']+'|'+self.users_info[0]['username']
+       
+    #     returned_scorecard=self.ScorecardModel.update(id=12345, name=scorecard_name,  categories=self.partial_card)
+    #     ensure_data_packet_formatting(self, returned_scorecard, method, "error")
+    #     returned_scorecards = self.ScorecardModel.get_all()
+    #     self.assertTrue(len(returned_scorecards['data'])==0)
+    #     print("test_update_scorecard_DNE passed!")
     
     # def test_remove_scorecard_DNE(self):
     #     method = "scorecard.remove"
