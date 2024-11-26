@@ -182,7 +182,6 @@ class Scorecard:
             #print("looking for", username, "games")
             game_list = []
             all_cards = self.get_all()["data"]
-            print("all_cards", all_cards)
             for card in all_cards:
                 #print(card["name"])
                 card_user_name = card["name"].split("|")[1]
@@ -232,20 +231,12 @@ class Scorecard:
             db_connection = sqlite3.connect(self.db_name)
             cursor = db_connection.cursor()
 
-            print("all scorecards", len(self.get_all()["data"]))
-
             results = cursor.execute(f"SELECT * FROM {self.table_name} WHERE id = {id};").fetchall()
-            print("game exists", results)
 
             if (results):
                 deleted_game = self.get(id=id)["data"]
                 cursor.execute(f"DELETE FROM {self.table_name} WHERE id = {id};")
                 db_connection.commit()
-
-                print("after game deletion", cursor.execute(f"SELECT * FROM {self.table_name} WHERE id = {id};").fetchall())
-
-                print("all scorecards after deletion", len(self.get_all()["data"]))
-                
 
                 return {"status":"success", 
                         "data":deleted_game}
