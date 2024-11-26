@@ -64,6 +64,15 @@ class Scorecard:
             current_players_count = len(results)
             turn_order = current_players_count + 1
 
+            if (turn_order > 4):
+                return {"status":"error",
+                    "data":"maximum players in game"}
+            
+            player_exist_test = cursor.execute(f"SELECT * FROM {self.table_name} WHERE user_id = {user_id};").fetchall()
+            if (player_exist_test):
+                return {"status":"error",
+                    "data":"player already in game"}
+
             scorecard_data = [card_id, game_id, user_id, categories_string, turn_order, name]
             cursor.execute(f"INSERT INTO {self.table_name} VALUES (?, ?, ?, ?, ?, ?);", scorecard_data)
             db_connection.commit()
@@ -131,9 +140,9 @@ class Scorecard:
             scorecard_list = []
             all_cards = self.get_all()["data"]
             for card in all_cards:
-                card_game_name = card["name"].split("|")[1]
+                card_game_name = card["name"].split("|")[0]
                 if (card_game_name == game_name):
-                    scorecard_list.append(card["name"])
+                    scorecard_list.append(card)
             
             return {"status":"success", "data":scorecard_list}
                 
@@ -151,9 +160,10 @@ class Scorecard:
             username_list = []
             all_cards = self.get_all()["data"]
             for card in all_cards:
-                card_user_name = card["name"].split("|")[0]
-                if (card_user_name == game_name):
-                    username_list.append(card["name"])
+                card_game_name = card["name"].split("|")[0]
+                card_user_name = card["name"].split("|")[1]
+                if (card_game_name == game_name):
+                    username_list.append(card_user_name)
             
             return {"status":"success", "data":username_list}
 
@@ -168,12 +178,18 @@ class Scorecard:
             db_connection = sqlite3.connect(self.db_name)
             cursor = db_connection.cursor()
             
+            print("looking for", username, "games")
             game_list = []
             all_cards = self.get_all()["data"]
             for card in all_cards:
+                print(card["name"])
                 card_user_name = card["name"].split("|")[1]
+                print(card_user_name)
                 if (card_user_name == username):
+                    print("user has this game", card["name"].split("|")[0])
                     game_list.append(card["name"].split("|")[0])
+            
+            print(username, "games:", game_list)
             
             return {"status":"success", "data":game_list}
 
@@ -214,11 +230,20 @@ class Scorecard:
             db_connection = sqlite3.connect(self.db_name)
             cursor = db_connection.cursor()
 
+            print("all scorecards", len(self.get_all()["data"]))
+
             results = cursor.execute(f"SELECT * FROM {self.table_name} WHERE id = {id};").fetchall()
+            print("game exists", results)
+
             if (results):
                 deleted_game = self.get(id=id)["data"]
                 cursor.execute(f"DELETE FROM {self.table_name} WHERE id = {id};")
                 db_connection.commit()
+
+                print("after game deletion", cursor.execute(f"SELECT * FROM {self.table_name} WHERE id = {id};").fetchall())
+
+                print("all scorecards after deletion", len(self.get_all()["data"]))
+                
 
                 return {"status":"success", 
                         "data":deleted_game}
@@ -267,7 +292,23 @@ class Scorecard:
 
     def tally_score(self, score_info):
         total_score = 0
-   
+        scores_dict = score_info  
+        upper_sum = 0
+        lower_sum = 0
+
+        for category in scores_dict["upper"]:
+            if (scores_dict["upper"][category] > -1):
+                upper_sum += scores_dict["upper"][category]
+        if (upper_sum >= 63):
+            upper_sum += 35
+
+        for category in scores_dict["lower"]:
+            if (scores_dict["lower"][category] > -1):
+                upper_sum += scores_dict["lower"][category]
+        if (lower_sum >= 63):
+            lower_sum += 35
+
+        total_score = upper_sum + lower_sum
         return total_score
 
 if __name__ == '__main__':
