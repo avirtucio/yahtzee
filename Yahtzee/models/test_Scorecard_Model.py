@@ -515,7 +515,7 @@ class Scorecard_Model_Tests(unittest.TestCase):
         
         username_to_check = user['username']
         all_user_game_names = self.ScorecardModel.get_all_user_game_names(username=username_to_check)
-        print(self.games)
+        #print(self.games)
         self.assertEqual(len(all_user_game_names["data"]), len(self.games))
         for game_name_to_check in all_game_names:
             self.assertIn(game_name_to_check, all_user_game_names['data'])

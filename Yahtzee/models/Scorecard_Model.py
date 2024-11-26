@@ -68,7 +68,8 @@ class Scorecard:
                 return {"status":"error",
                     "data":"maximum players in game"}
             
-            player_exist_test = cursor.execute(f"SELECT * FROM {self.table_name} WHERE user_id = {user_id};").fetchall()
+            player_exist_test = cursor.execute(f"SELECT * FROM {self.table_name} WHERE user_id = {user_id} AND game_id = {game_id};").fetchall()
+            
             if (player_exist_test):
                 return {"status":"error",
                     "data":"player already in game"}
@@ -178,18 +179,19 @@ class Scorecard:
             db_connection = sqlite3.connect(self.db_name)
             cursor = db_connection.cursor()
             
-            print("looking for", username, "games")
+            #print("looking for", username, "games")
             game_list = []
             all_cards = self.get_all()["data"]
+            print("all_cards", all_cards)
             for card in all_cards:
-                print(card["name"])
+                #print(card["name"])
                 card_user_name = card["name"].split("|")[1]
-                print(card_user_name)
+                #print(card_user_name)
                 if (card_user_name == username):
-                    print("user has this game", card["name"].split("|")[0])
+                    #print("user has this game", card["name"].split("|")[0])
                     game_list.append(card["name"].split("|")[0])
             
-            print(username, "games:", game_list)
+            #print(username, "games:", game_list)
             
             return {"status":"success", "data":game_list}
 
