@@ -8,9 +8,13 @@
     <body>
     
     {% include 'partial/navbar.html' %}
+
+        <section id="feedback">
+            <text id="feedback_text">feedback</text>
+        </section>
     
         <section id="user_info_form">
-            <form action="/game" method="POST">
+            <form action="/games:{{username}}" method="POST">
                 <label for="username_input">Username:</label><br>
                 <input type="text" id="username_input" name="username"><br>
                 <label for="password">Password:</label><br>

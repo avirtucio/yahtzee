@@ -8,14 +8,26 @@
     <body>
     
     {% include 'partial/navbar.html' %}
+        <section id="feedback">
+            <text>{{error}}</text>
+        </section>
 
-        <form action="/game" method="GET">
-            <label for="username_input">Username:</label><br>
-            <input type="text" id="username_input" name="username"><br>
-            <label for="password">Password:</label><br>
-            <input type="text" id="password_input" name="password"> <br>
-            <input type="submit" id="login_submit" value="Submit">
-        </form>
+        <section id="login">
+            <form action="/login" method="GET">
+                <label for="username_input">Username:</label><br>
+                <input type="text" id="username_input" name="username"><br>
+                <label for="password">Password:</label><br>
+                <input type="text" id="password_input" name="password"> <br>
+                <input type="submit" id="login_submit" value="Submit">
+            </form>
+        </section>
+
+        <section id="create_user">
+            <form action="/users" method="GET">
+                <button type="submit" id="login_submit">Create</button>
+            </form>
+        </section>
+            
 
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
         <script src="https://cdn.jsdelivr.net/npm/popper.js@1.12.9/dist/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q" crossorigin="anonymous"></script>

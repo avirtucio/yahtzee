@@ -3,6 +3,11 @@
 import sqlite3
 import random
 import json
+import os
+import sys
+
+fpath = os.path.join(os.path.dirname(__file__), '../Models')
+sys.path.append(fpath)
 from User_Model import User
 from Game_Model import Game
 
@@ -316,4 +321,4 @@ if __name__ == '__main__':
     Scorecards = Scorecard(DB_location, "scorecards", "users", "games")
     Scorecards.initialize_table()
 
-    Scorecards.update()
+    
