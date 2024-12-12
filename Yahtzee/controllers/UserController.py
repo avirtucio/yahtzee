@@ -6,10 +6,22 @@ yahtzeeDB = './yahtzeeDB.db'
 User = User_Model.User(yahtzeeDB, "users")
 
 def user():
+    print(f"request.method= {request.method} request.url={request.url}")
+    print(f"request.url={request.query_string}")
+    print("request.form:", request.form)
     if (request.method == "POST"):
-        user_info = {"email": request.form,
-                     "username": , 
-                     "password":
+        print("post request inititated")
+        user_info = {"email": request.form["email"],
+                     "username": request.form["username"], 
+                     "password": request.form["password"]
                      }
-
-    return render_template('user_details.html')
+        print("user_info:", user_info)
+        
+        create_user_data_packet = User.create(user_info)
+        
+        if (create_user_data_packet["status"] == "success"):
+            return render_template('user_games.html', username = request.form["username"])
+        else:
+            return render_template('user_details.html')
+    else:
+        return render_template('user_details.html')

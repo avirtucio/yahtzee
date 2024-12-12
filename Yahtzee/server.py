@@ -19,9 +19,9 @@ app = Flask(__name__, static_url_path='', static_folder='static')
 app.add_url_rule('/', view_func=SessionController.login, methods = ['GET'])
 app.add_url_rule('/login', view_func=SessionController.login, methods = ['GET'])
 
-# #game router
-# app.add_url_rule('/games/<username>', view_func=SessionController.login, methods = ['GET'])
-# app.add_url_rule('/games', view_func=SessionController.login, methods = ['POST'])
+#game router
+app.add_url_rule('/games/<username>', view_func=GameController.users_games, methods = ['GET'])
+app.add_url_rule('/games', view_func=GameController.games, methods = ['GET', 'POST'])
 
 # #scorecard router
 # app.add_url_rule('/', view_func=SessionController.login, methods = ['GET'])
@@ -36,11 +36,11 @@ app.add_url_rule('/users', view_func=UserController.user, methods = ['GET', 'POS
 
 #     return render_template('login.html')
 
-@app.route('/game')
-def game():
-    username = request.args.get('username')
+# @app.route('/games:<username>')
+# def game():
+#     username = request.form.get('username')
 
-    return render_template('game.html', username=username)
+#     return render_template('game.html', username=username)
 
 @app.route('/user_details')
 def user_details():
