@@ -9,4 +9,7 @@ def users_games(username):
     return render_template("user_games.html")
 
 def games():
-    return render_template("user_games.html")
+    if (request.method == "POST"):
+        print("request method was post")
+        print(request.form)
+        return render_template("user_games.html")

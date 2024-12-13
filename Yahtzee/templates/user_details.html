@@ -10,11 +10,11 @@
     {% include 'partial/navbar.html' %}
 
         <section id="feedback">
-            <text id="feedback_text">feedback</text>
+            <text id="feedback_text">{{feedback}}</text>
         </section>
     
         <section id="user_info_form">
-            <form action="/games" method="POST">
+            <form action="/users" method="POST">
                 <label for="username_input">Username:</label><br>
                 <input type="text" id="username_input" name="username"><br>
                 <label for="password">Password:</label><br>
@@ -23,7 +23,7 @@
                 <input type="text" id="email_input" name="email"> <br>
 
                 <button type="submit" id="login_submit">Create</button>
-                <button type="submit" id="login_submit">Delete</button>
+                <!-- <button type="submit" id="login_submit">Delete</button> -->
 
             </form>
         </section>

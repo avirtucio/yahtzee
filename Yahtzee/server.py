@@ -29,6 +29,8 @@ app.add_url_rule('/games', view_func=GameController.games, methods = ['GET', 'PO
 
 #user router
 app.add_url_rule('/users', view_func=UserController.user, methods = ['GET', 'POST'])
+app.add_url_rule('/users/<username>', view_func=UserController.single_user, methods = ['GET', 'POST'])
+app.add_url_rule('/users/delete/<username>', view_func=UserController.delete_user, methods = ['GET'])
 
 
 # @app.route('/')
