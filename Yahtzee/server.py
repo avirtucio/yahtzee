@@ -24,8 +24,7 @@ app.add_url_rule('/games/<username>', view_func=GameController.users_games, meth
 app.add_url_rule('/games', view_func=GameController.games, methods = ['GET', 'POST'])
 
 # #scorecard router
-# app.add_url_rule('/', view_func=SessionController.login, methods = ['GET'])
-# app.add_url_rule('/login', view_func=SessionController.login, methods = ['GET'])
+# app.add_url_rule('/scorecards/<scorecard_id>', view_func=ScorecardController.update_scorecard, methods = ['POST'])
 
 #user router
 app.add_url_rule('/users', view_func=UserController.user, methods = ['GET', 'POST'])
@@ -44,10 +43,10 @@ app.add_url_rule('/users/delete/<username>', view_func=UserController.delete_use
 
 #     return render_template('game.html', username=username)
 
-@app.route('/user_details')
-def user_details():
+# @app.route('/user_details')
+# def user_details():
 
-    return render_template('user_details.html')
+#     return render_template('user_details.html')
 
 if __name__ == "__main__":
     port = int(os.environ.get("GET", 8080))
