@@ -15,6 +15,7 @@ def login():
 
     if (username):
         get_user_data_packet = User.get(username=username)
+        
         if (get_user_data_packet["status"] == "success"):
             if (get_user_data_packet["data"]["password"] == password):
                 return render_template('user_games.html')
