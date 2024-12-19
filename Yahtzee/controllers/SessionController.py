@@ -2,7 +2,7 @@ from flask import jsonify
 from flask import request, render_template
 
 from Models import User_Model
-yahtzeeDB = '../Models/yahtzeeDB.db'
+yahtzeeDB = './Models/yahtzeeDB.db'
 User = User_Model.User(yahtzeeDB, "users")
 
 def login():

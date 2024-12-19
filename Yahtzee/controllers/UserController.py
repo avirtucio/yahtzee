@@ -3,7 +3,7 @@ from flask import request, render_template
 import os
 
 from Models import User_Model
-yahtzeeDB = '../Models/yahtzeeDB.db'
+yahtzeeDB = './Models/yahtzeeDB.db'
 User = User_Model.User(yahtzeeDB, "users")
 
 def user():

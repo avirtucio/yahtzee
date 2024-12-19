@@ -35,7 +35,7 @@ class User:
             if (username):
                 print("user model, exists, checking if user name exists", username)
                 print("user model, exists, self.table_name", self.table_name)
-                results = cursor.execute(f"SELECT * FROM {self.table_name};").fetchall()
+                results = cursor.execute(f"SELECT * FROM {self.table_name} WHERE username = '{username}';").fetchall()
                 print("results", results)
             elif (id):
                 results = cursor.execute(f"SELECT * FROM {self.table_name} WHERE id = {id};").fetchall()
@@ -88,6 +88,7 @@ class User:
                     cursor.execute(f"INSERT INTO {self.table_name} VALUES (?, ?, ?, ?);", user_data)
                     db_connection.commit()
                     
+                    print("usermodel, create function", self.db_name)
                     return {"status": "success",
                         "data": self.to_dict(user_data)
                         }

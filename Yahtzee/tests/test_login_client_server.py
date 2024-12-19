@@ -78,25 +78,25 @@ class Basic_Login_Tests(unittest.TestCase):
             self.users[self.valid_users[i]['email']] = user["data"]
             print(self.valid_users[i], "created")
 
-    # def test_login_required_elements(self):
-    #     """login.html contains all required elements/id's"""
-    #     self.browser.get(self.url)
-    #     expected = self.login_requirements['title']
-    #     actual = self.browser.title
-    #     self.assertEqual(actual, expected, f"The page title for user_details.html should be {expected}")
+    def test_login_required_elements(self):
+        """login.html contains all required elements/id's"""
+        self.browser.get(self.url)
+        expected = self.login_requirements['title']
+        actual = self.browser.title
+        self.assertEqual(actual, expected, f"The page title for user_details.html should be {expected}")
         
-    #     for expected_id in self.login_requirements['elements']:
-    #         try:
-    #             actual_element = self.browser.find_element(By.ID, expected_id)
-    #             if expected_id=="user_details_submit":
-    #                 self.assertEqual(actual_element.get_attribute("value").lower(), "CREATE".lower(), f"The form button should say CREATE")
-    #         except:
-    #             self.fail(f"#{expected_id} element does not exist!")
-    #         expected_type = self.login_requirements['elements'][expected_id].lower()
-    #         actual_type = actual_element.tag_name
-    #         self.assertEqual(actual_type.lower(), expected_type, f"The type of element should be {expected_type}")
+        for expected_id in self.login_requirements['elements']:
+            try:
+                actual_element = self.browser.find_element(By.ID, expected_id)
+                if expected_id=="user_details_submit":
+                    self.assertEqual(actual_element.get_attribute("value").lower(), "CREATE".lower(), f"The form button should say CREATE")
+            except:
+                self.fail(f"#{expected_id} element does not exist!")
+            expected_type = self.login_requirements['elements'][expected_id].lower()
+            actual_type = actual_element.tag_name
+            self.assertEqual(actual_type.lower(), expected_type, f"The type of element should be {expected_type}")
         
-    #     print("test_login_required_elements... test passed!")
+        print("test_login_required_elements... test passed!")
     
     def test_login_legit(self):
         for user in self.valid_users:
@@ -108,37 +108,37 @@ class Basic_Login_Tests(unittest.TestCase):
 
         print("test_login_legit... test passed!")
     
-    # def test_login_user_DNE(self):
-    #     for user in self.valid_users:
-    #         self.browser.get(self.url)
-    #         self.enter_and_submit_user_info(user["username"]+"_xxx", user["password"])
-    #         wait(self.browser, 2)
-    #         self.assertEqual(self.browser.title, self.login_requirements['title'], f"Should redirect to login.html")
+    def test_login_user_DNE(self):
+        for user in self.valid_users:
+            self.browser.get(self.url)
+            self.enter_and_submit_user_info(user["username"]+"_xxx", user["password"])
+            wait(self.browser, 2)
+            self.assertEqual(self.browser.title, self.login_requirements['title'], f"Should redirect to login.html")
 
-    #         feedback_element = self.browser.find_element(By.ID, "feedback")
-    #         self.assertTrue(len(feedback_element.text)>10, "Substantial feedback should be provided.")
+            feedback_element = self.browser.find_element(By.ID, "feedback")
+            self.assertTrue(len(feedback_element.text)>10, "Substantial feedback should be provided.")
 
-    #     print("test_login_user_DNE... test passed!")
+        print("test_login_user_DNE... test passed!")
 
     
-    # def test_login_invalid_password(self):
-    #     for user in self.valid_users:
-    #         self.browser.get(self.url)
-    #         self.enter_and_submit_user_info(user["username"], user["password"]+"_xxx")
-    #         wait(self.browser, 2)
-    #         self.assertEqual(self.browser.title, self.login_requirements['title'], f"Should redirect to login.html")
+    def test_login_invalid_password(self):
+        for user in self.valid_users:
+            self.browser.get(self.url)
+            self.enter_and_submit_user_info(user["username"], user["password"]+"_xxx")
+            wait(self.browser, 2)
+            self.assertEqual(self.browser.title, self.login_requirements['title'], f"Should redirect to login.html")
 
-    #         feedback_element = self.browser.find_element(By.ID, "feedback")
-    #         self.assertTrue(len(feedback_element.text)>10, "Substantial feedback should be provided.")
-    #     print("test_login_invalid_password... test passed!")
+            feedback_element = self.browser.find_element(By.ID, "feedback")
+            self.assertTrue(len(feedback_element.text)>10, "Substantial feedback should be provided.")
+        print("test_login_invalid_password... test passed!")
     
-    # def test_create_user_button(self):
-    #     self.browser.get(self.url)
-    #     submit_button=self.browser.find_element(By.ID, 'create_submit')
-    #     submit_button.click()
+    def test_create_user_button(self):
+        self.browser.get(self.url)
+        submit_button=self.browser.find_element(By.ID, 'create_submit')
+        submit_button.click()
         
-    #     self.assertEqual(self.browser.title, "Yahtzee: User Details", f"Should redirect to login.html")
-    #     print("test_create_user_button... test passed!")
+        self.assertEqual(self.browser.title, "Yahtzee: User Details", f"Should redirect to login.html")
+        print("test_create_user_button... test passed!")
     
 if __name__ == '__main__':
     unittest.main()
