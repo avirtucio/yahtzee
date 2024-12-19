@@ -64,7 +64,7 @@ class Basic_Login_Tests(unittest.TestCase):
         self.browser = webdriver.Chrome()
         self.addCleanup(self.browser.quit)
 
-        self.DB_location=f"{os.getcwd()}/Models/yahtzeeDB.db" #Assumes DB lives in the Models folder which is right next to the tests folder
+        self.DB_location=f"{os.getcwd()}/../Models/yahtzeeDB.db" #Assumes DB lives in the Models folder which is right next to the tests folder
         self.user_table_name = "users"
         self.game_table_name = "games"
         self.scorecard_table_name = "scorecard"
@@ -73,8 +73,10 @@ class Basic_Login_Tests(unittest.TestCase):
 
         self.users={} #add 4 users and keep track of their ids
         for i in range(len(self.valid_users)):
+            print(self.valid_users[i], "attempt")
             user = self.User_Model.create(self.valid_users[i])
             self.users[self.valid_users[i]['email']] = user["data"]
+            print(self.valid_users[i], "created")
 
     # def test_login_required_elements(self):
     #     """login.html contains all required elements/id's"""

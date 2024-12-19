@@ -8,8 +8,6 @@ import sys
 
 fpath = os.path.join(os.path.dirname(__file__), '../Models')
 sys.path.append(fpath)
-from User_Model import User
-from Game_Model import Game
 
 class Scorecard:
     def __init__(self, db_name, scorecard_table_name, user_table_name, game_table_name):
@@ -314,11 +312,11 @@ if __name__ == '__main__':
     #print("Current working directory:", os.getcwd())
     DB_location=f"{os.getcwd()}/yahtzeeDB.db"
     #print("location", DB_location)
-    Users = User(DB_location, "users")
-    Users.initialize_table()
-    Games = Game(DB_location, "games")
-    Games.initialize_table()
-    Scorecards = Scorecard(DB_location, "scorecards", "users", "games")
-    Scorecards.initialize_table()
+    # Users = User(DB_location, "users")
+    # Users.initialize_table()
+    # Games = Game(DB_location, "games")
+    # Games.initialize_table()
+    # Scorecards = Scorecard(DB_location, "scorecards", "users", "games")
+    # Scorecards.initialize_table()
 
     

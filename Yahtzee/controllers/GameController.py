@@ -2,7 +2,7 @@ from flask import jsonify
 from flask import request, render_template
 
 from Models import Game_Model
-yahtzeeDB = './yahtzeeDB.db'
+yahtzeeDB = './Models/yahtzeeDB.db'
 Game = Game_Model.Game(yahtzeeDB, "games")
 
 def users_games(username):

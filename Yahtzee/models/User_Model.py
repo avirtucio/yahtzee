@@ -6,11 +6,12 @@ import random
 class User:
     def __init__(self, db_name, table_name):
         self.db_name =  db_name
+        print("user model construcotr", db_name)
         self.max_safe_id = 9007199254740991 #maximun safe Javascript integer
         self.table_name = table_name
     
     def initialize_table(self):
-        print(self.db_name)
+        print("user initialize table", self.db_name)
         db_connection = sqlite3.connect(self.db_name)
         cursor = db_connection.cursor()
         schema=f"""
@@ -30,8 +31,12 @@ class User:
             db_connection = sqlite3.connect(self.db_name)
             cursor = db_connection.cursor()
         #######
+            print("user model, exists, self.db_name", self.db_name)
             if (username):
-                results = cursor.execute(f"SELECT * FROM {self.table_name} WHERE username = '{username}';").fetchall()
+                print("user model, exists, checking if user name exists", username)
+                print("user model, exists, self.table_name", self.table_name)
+                results = cursor.execute(f"SELECT * FROM {self.table_name};").fetchall()
+                print("results", results)
             elif (id):
                 results = cursor.execute(f"SELECT * FROM {self.table_name} WHERE id = {id};").fetchall()
             
