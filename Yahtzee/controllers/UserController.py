@@ -59,13 +59,37 @@ def single_user(username):
 
             return render_template('user_details.html', context='get user', feedback=get_user_data_packet["data"], 
                                    user_name=user_name, user_password=user_password, user_email=user_email,
-                                   user_id=user_id)
+                                   user_id=user_id, username=username)
 
         elif (get_user_data_packet["status"] == "error"):
             return render_template('user_details.html', context='get user', feedback=get_user_data_packet["data"])
 
     elif (request.method == "POST"):
-        return render_template('user_details.html', context='get user')
+        print("request method was post")
+        user_id = User.get(username=username)["data"]["id"]
+        user_info = {"id": user_id,
+                     "email": request.form.get("email"),
+                     "username": request.form.get("username"), 
+                     "password": request.form.get("password")
+                     }
+        update_user_data_packet = User.update(user_info)
+        if (update_user_data_packet["status"] == "success"):
+            get_user_data_packet = User.get(id=user_id)
+            user_name = get_user_data_packet["data"]['username']
+            user_password = get_user_data_packet["data"]['password']
+            user_email = get_user_data_packet["data"]['email']
+            user_id = get_user_data_packet["data"]['id']
 
-def delete_user():
-    return render_template('user_details.html')
+            return render_template('user_details.html', context='get user', feedback=get_user_data_packet["data"], 
+                                   user_name=user_name, user_password=user_password, user_email=user_email,
+                                   user_id=user_id, username=username)
+        else:
+            return render_template('user_details.html', context='get user', username=username,
+                                   feedback=update_user_data_packet["data"])
+
+def delete_user(username):
+    if (User.exists(username=username)["data"]==True):
+        User.remove(username)
+        return render_template('login.html', username=username)
+    else:
+        return render_template('user_details.html', feedback="user does not exist")

@@ -14,23 +14,38 @@
         </section>
     
         <section id="user_info_form">
-            <form action="/users" method="POST">
-                <label for="username_input">Username:</label><br>
-                <input type="text" id="username_input" name="username"><br>
-                <label for="password">Password:</label><br>
-                <input type="text" id="password_input" name="password"> <br>
-                <label for="email">Email:</label><br>
-                <input type="text" id="email_input" name="email"> <br>
+            {% if context == 'create user' %}
+                <form action="/users" method="POST">
+                    <label for="username_input">Username:</label><br>
+                    <input type="text" id="username_input" name="username"><br>
+                    <label for="password">Password:</label><br>
+                    <input type="text" id="password_input" name="password"> <br>
+                    <label for="email">Email:</label><br>
+                    <input type="text" id="email_input" name="email"> <br>
 
-                {% if context == 'create user' %}
                     <button type="submit" id="create_submit">Create</button>
-                {% elif context == 'get user' %}
-                    <button type="submit" id="update_submit">Update</button>
-                    <button type="submit" id="delete_submit">Delete</button>
-                <!-- <button type="submit" id="login_submit">Delete</button> -->
-                 {% endif %}
+                </form>
 
-            </form>
+                
+                    
+            {% elif context == 'get user' %}
+                <form action="/users/{{username}}" method="POST">
+                    <label for="username_input">Username:</label><br>
+                    <input type="text" id="username_input" name="username"><br>
+                    <label for="password">Password:</label><br>
+                    <input type="text" id="password_input" name="password"> <br>
+                    <label for="email">Email:</label><br>
+                    <input type="text" id="email_input" name="email"> <br>
+
+                    <button type="submit" id="update_submit">Update</button>
+                </form>
+                <form action="/users/delete/{{username}}" method="GET">
+                    <button type="submit" id="delete_submit">Delete</button>
+                </form>
+            <!-- <button type="submit" id="login_submit">Delete</button> -->
+            {% endif %}
+
+            
         </section>
         <script>
             document.getElementById("username_input").value = "{{user_name}}"
