@@ -73,10 +73,8 @@ class Basic_Login_Tests(unittest.TestCase):
 
         self.users={} #add 4 users and keep track of their ids
         for i in range(len(self.valid_users)):
-            print(self.valid_users[i], "attempt")
             user = self.User_Model.create(self.valid_users[i])
             self.users[self.valid_users[i]['email']] = user["data"]
-            print(self.valid_users[i], "created")
 
     def test_login_required_elements(self):
         """login.html contains all required elements/id's"""
@@ -103,7 +101,6 @@ class Basic_Login_Tests(unittest.TestCase):
             self.browser.get(self.url)
             self.enter_and_submit_user_info(user["username"], user["password"])
             wait(self.browser, 2)
-            self.browser.save_screenshot("login legit.png")
             self.assertEqual(self.browser.title, "Yahtzee: User Games", f"Should redirect to user_games.html")
 
         print("test_login_legit... test passed!")

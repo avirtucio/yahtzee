@@ -31,7 +31,7 @@ class User:
             db_connection = sqlite3.connect(self.db_name)
             cursor = db_connection.cursor()
         #######
-            print("user model, exists, self.db_name", self.db_name)
+            #print("user model, exists, self.db_name", self.db_name)
             if (username):
                 print("user model, exists, checking if user name exists", username)
                 print("user model, exists, self.table_name", self.table_name)
@@ -162,6 +162,20 @@ class User:
 
             if (self.exists(id=user_info["id"])["data"] == True):
                 for element in user_info:
+                    if (element == "username"):
+                        for character in user_info["username"]:
+                            if ((character.isalnum() == False) and (character != "_") and (character != "-")):
+                                return {"status":"error",
+                                        "data":"invalid new username"}
+                        cursor.execute(f"UPDATE {self.table_name} SET {element}='{user_info[element]}' WHERE id = '{user_info['id']}'")
+                    if (element == "password"):
+                        if (len(user_info["password"]) < 8):
+                            return {"status":"error",
+                                    "data":"invalid new username"}
+                        cursor.execute(f"UPDATE {self.table_name} SET {element}='{user_info[element]}' WHERE id = '{user_info['id']}'")
+                    if (element == "email"):
+                        
+                   
                     if (element != "id"):
                         cursor.execute(f"UPDATE {self.table_name} SET {element}='{user_info[element]}' WHERE id = '{user_info['id']}'")
                         db_connection.commit()

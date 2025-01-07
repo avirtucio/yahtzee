@@ -23,7 +23,7 @@
                     <label for="email">Email:</label><br>
                     <input type="text" id="email_input" name="email"> <br>
 
-                    <button type="submit" id="create_submit">Create</button>
+                    <input type="submit" id="user_details_submit" value="Create">
                 </form>
 
                 
@@ -37,10 +37,10 @@
                     <label for="email">Email:</label><br>
                     <input type="text" id="email_input" name="email"> <br>
 
-                    <button type="submit" id="update_submit">Update</button>
+                    <input type="submit" id="user_details_submit" value="Update">
                 </form>
                 <form action="/users/delete/{{username}}" method="GET">
-                    <button type="submit" id="delete_submit">Delete</button>
+                    <input type="submit" id="user_details_delete_submit" value="Update">
                 </form>
             <!-- <button type="submit" id="login_submit">Delete</button> -->
             {% endif %}

@@ -67,13 +67,16 @@ def single_user(username):
 
     elif (request.method == "POST"):
         print("request method was post")
+        print(f"{username} in submit request")
         user_id = User.get(username=username)["data"]["id"]
+        print(user_id)
         user_info = {"id": user_id,
                      "email": request.form.get("email"),
                      "username": request.form.get("username"), 
                      "password": request.form.get("password")
                      }
         update_user_data_packet = User.update(user_info)
+        print(update_user_data_packet)
         if (update_user_data_packet["status"] == "success"):
             get_user_data_packet = User.get(id=user_id)
             user_name = get_user_data_packet["data"]['username']
