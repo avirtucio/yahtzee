@@ -10,7 +10,7 @@
     {% include 'partial/navbar.html' %}
 
         <section id="feedback">
-            <text id="feedback_text">{{feedback}}</text>
+            <text id="feedback-text">{{feedback}}</text>
         </section>
     
         <section id="user_info_form">
@@ -40,7 +40,7 @@
                     <input type="submit" id="user_details_submit" value="Update">
                 </form>
                 <form action="/users/delete/{{username}}" method="GET">
-                    <input type="submit" id="user_details_delete_submit" value="Update">
+                    <input type="submit" id="user_details_delete_submit" value="Delete">
                 </form>
             <!-- <button type="submit" id="login_submit">Delete</button> -->
             {% endif %}

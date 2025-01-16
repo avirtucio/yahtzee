@@ -37,7 +37,9 @@ class Scorecard:
         db_connection.close()
     
     def create(self, game_id, user_id, name):
+        print("scorecard create")
         try: 
+            print("scorecared create after try")
             db_connection = sqlite3.connect(self.db_name)
             cursor = db_connection.cursor()
             card_id = random.randint(0, self.max_safe_id)
@@ -62,7 +64,8 @@ class Scorecard:
                 }
             }
             categories_string = json.dumps(categories_dict)
-
+            print("scorecard create after json dumps")
+            print(self.table_name)
             results = cursor.execute(f"SELECT * FROM {self.table_name} WHERE game_id = {game_id};").fetchall()
             current_players_count = len(results)
             turn_order = current_players_count + 1
@@ -71,13 +74,18 @@ class Scorecard:
                 return {"status":"error",
                     "data":"maximum players in game"}
             
+            
+            
             player_exist_test = cursor.execute(f"SELECT * FROM {self.table_name} WHERE user_id = {user_id} AND game_id = {game_id};").fetchall()
             
             if (player_exist_test):
                 return {"status":"error",
                     "data":"player already in game"}
+            
+            print("scorecard create right before scorecard data")
 
             scorecard_data = [card_id, game_id, user_id, categories_string, turn_order, name]
+            print("scorecard model, create scorecard, scorecard_data:", scorecard_data)
             cursor.execute(f"INSERT INTO {self.table_name} VALUES (?, ?, ?, ?, ?, ?);", scorecard_data)
             db_connection.commit()
 
@@ -256,6 +264,7 @@ class Scorecard:
     def to_dict(self, card_tuple):
         game_dict={}
         if card_tuple:
+            print("scorecard model, to_dict, card_tuple[3]:", card_tuple[3])
             game_dict["id"]=card_tuple[0]
             game_dict["game_id"]=card_tuple[1]
             game_dict["user_id"]=card_tuple[2]

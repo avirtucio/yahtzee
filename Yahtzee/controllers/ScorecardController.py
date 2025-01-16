@@ -1,4 +1,4 @@
 from flask import jsonify
 from flask import request
 
-from Models import Scorecard_Model
+from models import Scorecard_Model

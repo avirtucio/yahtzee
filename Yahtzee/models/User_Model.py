@@ -59,6 +59,8 @@ class User:
             cursor = db_connection.cursor()
             user_id = random.randint(0, self.max_safe_id)
 
+            print("user_model, create function was called, db_connection was established")
+
             # TODO: check to see if id already exists!!
             
             if ((self.exists(id=user_id)["data"] == False) and (self.exists(username=user_info["username"])["data"] == False)):
@@ -161,24 +163,41 @@ class User:
             cursor = db_connection.cursor()
 
             if (self.exists(id=user_info["id"])["data"] == True):
-                for element in user_info:
-                    if (element == "username"):
-                        for character in user_info["username"]:
-                            if ((character.isalnum() == False) and (character != "_") and (character != "-")):
-                                return {"status":"error",
-                                        "data":"invalid new username"}
-                        cursor.execute(f"UPDATE {self.table_name} SET {element}='{user_info[element]}' WHERE id = '{user_info['id']}'")
-                    if (element == "password"):
-                        if (len(user_info["password"]) < 8):
-                            return {"status":"error",
-                                    "data":"invalid new username"}
-                        cursor.execute(f"UPDATE {self.table_name} SET {element}='{user_info[element]}' WHERE id = '{user_info['id']}'")
-                    if (element == "email"):
-                        
-                   
-                    if (element != "id"):
-                        cursor.execute(f"UPDATE {self.table_name} SET {element}='{user_info[element]}' WHERE id = '{user_info['id']}'")
-                        db_connection.commit()
+                duplicate_username_check = cursor.execute(f"SELECT * FROM {self.table_name} WHERE username='{user_info['username']}' AND id<>'{user_info['id']}'").fetchall()
+                duplicate_email_check = cursor.execute(f"SELECT * FROM {self.table_name} WHERE email='{user_info['email']}' AND id<>'{user_info['id']}'").fetchall()
+                for character in user_info["username"]:
+                    print("user model update, checking character in new user:", character)
+                    if ((character.isalnum() == False) and (character != "_") and (character != "-")):
+                        return {"status":"error",
+                                "data":"invalid new username"}
+                    elif (duplicate_username_check):
+                        return {"status":"error",
+                                "data":"username already exists"}
+                    
+                cursor.execute(f"UPDATE {self.table_name} SET 'username'='{user_info['username']}' WHERE id = '{user_info['id']}'")
+                db_connection.commit()
+                
+            
+                if (len(user_info["password"]) < 8):
+                    print("user model, update, attempting to update password to:", user_info["password"])
+                    return {"status":"error",
+                            "data":"invalid new password"}
+                else:
+                    cursor.execute(f"UPDATE {self.table_name} SET 'password'='{user_info['password']}' WHERE id = '{user_info['id']}'")
+                    db_connection.commit()
+                
+            
+                email_array = list(user_info["email"])
+                if ((" " in email_array) or ("@" not in email_array) or("." not in email_array)):
+                    return {"status":"error",
+                            "data":"invalid new email"}
+                elif (duplicate_email_check):
+                    return {"status":"error",
+                            "data":"email already in use"}
+                else:
+                    cursor.execute(f"UPDATE {self.table_name} SET 'email'='{user_info['email']}' WHERE id = '{user_info['id']}'")
+                    db_connection.commit()
+            
 
                 return {"status":"success",
                         "data":self.get(id=user_info['id'])["data"]}

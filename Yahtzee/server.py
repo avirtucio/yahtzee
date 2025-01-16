@@ -6,7 +6,7 @@ import math
 import os
 import sys
 
-from Controllers import GameController, ScorecardController, SessionController, UserController
+from controllers import GameController, ScorecardController, SessionController, UserController
 
 #Connect Controller definitions
 fpath = os.path.join(os.path.dirname(__file__), 'Controllers')
@@ -21,7 +21,10 @@ app.add_url_rule('/login', view_func=SessionController.login, methods = ['GET'])
 
 #game router
 app.add_url_rule('/games/<username>', view_func=GameController.users_games, methods = ['GET'])
-app.add_url_rule('/games', view_func=GameController.games, methods = ['GET', 'POST'])
+app.add_url_rule('/games', view_func=GameController.create_game, methods = ['POST'])
+app.add_url_rule('/games/join', view_func=GameController.join_game, methods = ['POST'])
+app.add_url_rule('/games/delete/<game_name>/<username>', view_func=GameController.delete_game, methods = ['GET'])
+# app.add_url_rule('/games/<game_name>/<username>', view_func=GameController.games, methods = ['POST'])
 
 # #scorecard router
 # app.add_url_rule('/scorecards/<scorecard_id>', view_func=ScorecardController.update_scorecard, methods = ['POST'])

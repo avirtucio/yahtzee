@@ -1,7 +1,7 @@
 from flask import jsonify
 from flask import request, render_template
 
-from Models import User_Model
+from models import User_Model
 yahtzeeDB = './Models/yahtzeeDB.db'
 User = User_Model.User(yahtzeeDB, "users")
 
@@ -18,7 +18,7 @@ def login():
         print("get user packet", get_user_data_packet)
         if (get_user_data_packet["status"] == "success"):
             if (get_user_data_packet["data"]["password"] == password):
-                return render_template('user_games.html')
+                return render_template('user_games.html', username=username)
             else:
                 return render_template('login.html', error = "incorrect password")
         else:
