@@ -10,13 +10,13 @@
     {% include 'partial/navbar.html' %}
         <h3>{{username}} Games</h1>
         <section id="feedback">
-
+            <text>{{feedback}}</text>
         </section>
         
         <section id="games-list">
             <ol id="games_list">
                 {% for game_name in all_users_games %}
-                    <li>{{game_name}} <a href="/games/delete/{{game_name}}/{{username}}">Delete</a> </li>
+                    <li><a href="/games/{{game_name}}/{{username}}">{{game_name}}</a> <a href="/games/delete/{{game_name}}/{{username}}">Delete</a> </li>
                 {% endfor %}
             </ol>
         </section>
@@ -30,7 +30,7 @@
             </form>
             <form action="/games" method="POST">
                 <label for="game_name">Game Name:</label><br>
-                <input type="text" id="create_game_input" name="create_game_name"><br>
+                <input type="text" id="game_name_input" name="create_game_name"><br>
                 <input type="submit" id="create_submit" value="Create">
                 <input type="hidden" id="username" name="username" value="{{username}}">
             </form>
@@ -38,7 +38,9 @@
 
         <section id="high-scores">
             <ol id="high_scores_list">
-
+                {% for game_name in all_game_scores %}
+                    <li><text>{{game_name}} : {{all_game_scores[game_name]}}</text> </li>
+                {% endfor %}
             </ol>
         </section>
 

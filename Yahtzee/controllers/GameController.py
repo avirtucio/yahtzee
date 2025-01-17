@@ -8,34 +8,76 @@ User = User_Model.User(yahtzeeDB, "users")
 Scorecard = Scorecard_Model.Scorecard(yahtzeeDB, "scorecards", "users", "games")
 
 def users_games(username):
-    all_users_games = Scorecard.get_all_user_game_names(username)["data"]
-    return render_template("user_games.html", username=username, all_users_games=all_users_games)
+    if (User.exists(username=username)["data"]==False):
+        return render_template("login.html", error="user does not exist")
+    else:
+        all_users_games = Scorecard.get_all_user_game_names(username)["data"]
+        
+        all_game_scores = {}
+        for game_name in all_users_games:
+            game_score = Scorecard.tally_score(Scorecard.get(f"{game_name}|{username}")["data"]["categories"])
+            all_game_scores[game_name]=game_score
+
+            all_game_scores = {game_name: score for game_name, score in sorted(all_game_scores.items(), key=lambda item: item[1], reverse=True)}
+
+        return render_template("user_games.html", username=username, all_users_games=all_users_games,
+                               all_game_scores=all_game_scores)
 
 def create_game():
     username = request.form.get("username")
-    game_name = Game.create({"name":request.form.get("create_game_name")})["data"]["name"]
-    all_users_games = Scorecard.get_all_user_game_names(username)["data"]
-    return render_template("user_games.html", username=username, game_name=game_name, all_users_games=all_users_games)
+    gamename = request.form.get("create_game_name")
+
+    if (User.exists(username=username)["data"] == False):
+        return render_template("user_games.html", feedback="user does not exist")
+    elif (Game.exists(game_name=gamename)["data"] == True):
+        all_users_games = Scorecard.get_all_user_game_names(username)["data"]
+        return render_template("user_games.html", feedback="game already exists", username=username, all_users_games=all_users_games)
+    else:
+        game_name = Game.create({"name":gamename})["data"]["name"]
+        user_id = str(User.get(username=username)["data"]["id"])
+        game_id = str(Game.get(game_name=game_name)["data"]["id"])
+        
+        new_scorecard = Scorecard.create(game_id, user_id, f"{game_name}|{username}")
+        
+        all_users_games = Scorecard.get_all_user_game_names(username)["data"]
+       
+        all_game_scores = {}
+        for game_name in all_users_games:
+            game_score = Scorecard.tally_score(Scorecard.get(f"{game_name}|{username}")["data"]["categories"])
+            all_game_scores[game_name]=game_score
+
+            all_game_scores = {game_name: score for game_name, score in sorted(all_game_scores.items(), key=lambda item: item[1], reverse=True)}
+        return render_template("user_games.html", username=username, game_name=game_name, all_users_games=all_users_games,
+                               all_game_scores=all_game_scores)
     
 def join_game():
     username = request.form.get("username")
     game_name = request.form.get("join_game_name")
-    #check if usernames and gamenames actually exist
-    print('alsdjnglkadsjnglkdjasglkadsjgkldasjgkladsjgdalksjh')
-    print(type(username))
-    print(User.get(username=username))
-    user_id = str(User.get(username=username)["data"]["id"])
-    game_id = str(Game.get(game_name=game_name)["data"]["id"])
-    print("about to make new scorecard in join game")
-    new_scorecard = Scorecard.create(game_id, user_id, f"{game_name}|{username}")
-    print("join game, new scorecard:", new_scorecard)
-    all_users_games = Scorecard.get_all_user_game_names(username)["data"]
-    return render_template("user_games.html", username=username, game_name=game_name, all_users_games=all_users_games)
+    
+    if (User.exists(username=username)["status"] == "error"):
+        return render_template("user_games.html", feedback="user does not exist")
+    elif (Game.exists(game_name=game_name)["status"] == "error"):
+        return render_template("user_games.html", feedback="game does not exist")
+    else:
+        user_id = str(User.get(username=username)["data"]["id"])
+        game_id = str(Game.get(game_name=game_name)["data"]["id"])
+        new_scorecard = Scorecard.create(game_id, user_id, f"{game_name}|{username}")
+        all_users_games = Scorecard.get_all_user_game_names(username)["data"]
+        return render_template("user_games.html", username=username, game_name=game_name, all_users_games=all_users_games)
 
 def delete_game(game_name, username):
     scorecard_name=f"{game_name}|{username}"
     scorecard_id=Scorecard.get(name=scorecard_name)["data"]["id"]
-    deleted_game=Scorecard.remove(scorecard_id)["data"]
+    deleted_scorecard=Scorecard.remove(scorecard_id)["data"]
+    deleted_game=Game.remove(game_name)
 
     all_users_games = Scorecard.get_all_user_game_names(username)["data"]
-    return render_template("user_games.html", username=username, all_users_games=all_users_games)
+    
+    all_game_scores = {}
+    for game_name in all_users_games:
+        game_score = Scorecard.tally_score(Scorecard.get(f"{game_name}|{username}")["data"]["categories"])
+        all_game_scores[game_name]=game_score
+
+        all_game_scores = {game_name: score for game_name, score in sorted(all_game_scores.items(), key=lambda item: item[1], reverse=True)}
+    
+    return render_template("user_games.html", username=username, all_users_games=all_users_games, all_game_scores=all_game_scores)

@@ -203,7 +203,7 @@ class Game:
                         "data":deleted_game}
             else:
                 return {"status":"error",
-                    "data":"user name doesnt exist"}
+                    "data":"game name doesnt exist"}
 
         except sqlite3.Error as error:
             return {"status":"error",

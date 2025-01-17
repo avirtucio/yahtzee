@@ -37,9 +37,7 @@ class Scorecard:
         db_connection.close()
     
     def create(self, game_id, user_id, name):
-        print("scorecard create")
         try: 
-            print("scorecared create after try")
             db_connection = sqlite3.connect(self.db_name)
             cursor = db_connection.cursor()
             card_id = random.randint(0, self.max_safe_id)
@@ -64,8 +62,6 @@ class Scorecard:
                 }
             }
             categories_string = json.dumps(categories_dict)
-            print("scorecard create after json dumps")
-            print(self.table_name)
             results = cursor.execute(f"SELECT * FROM {self.table_name} WHERE game_id = {game_id};").fetchall()
             current_players_count = len(results)
             turn_order = current_players_count + 1
@@ -73,8 +69,6 @@ class Scorecard:
             if (turn_order > 4):
                 return {"status":"error",
                     "data":"maximum players in game"}
-            
-            
             
             player_exist_test = cursor.execute(f"SELECT * FROM {self.table_name} WHERE user_id = {user_id} AND game_id = {game_id};").fetchall()
             
