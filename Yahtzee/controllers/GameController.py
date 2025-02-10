@@ -51,19 +51,23 @@ def create_game():
                                all_game_scores=all_game_scores)
     
 def join_game():
-    username = request.form.get("username")
-    game_name = request.form.get("join_game_name")
+    username = request.json.get("username")
+    game_name = request.json.get("game_name")
+    print("game_controller, join_game, username and game_name:", username, game_name)
     
     if (User.exists(username=username)["status"] == "error"):
-        return render_template("user_games.html", feedback="user does not exist")
+        return jsonify({'status': 'error', 'message': 'username does not exist'})
+        # return render_template("user_games.html", feedback="user does not exist")
     elif (Game.exists(game_name=game_name)["status"] == "error"):
-        return render_template("user_games.html", feedback="game does not exist")
+        return jsonify({'status': 'error', 'message': 'game does not exist'})
+        # return render_template("user_games.html", feedback="game does not exist")
     else:
         user_id = str(User.get(username=username)["data"]["id"])
         game_id = str(Game.get(game_name=game_name)["data"]["id"])
         new_scorecard = Scorecard.create(game_id, user_id, f"{game_name}|{username}")
         all_users_games = Scorecard.get_all_user_game_names(username)["data"]
-        return render_template("user_games.html", username=username, game_name=game_name, all_users_games=all_users_games)
+        return jsonify(all_users_games)
+        # return render_template("user_games.html", username=username, game_name=game_name, all_users_games=all_users_games)
 
 def delete_game(game_name, username):
     scorecard_name=f"{game_name}|{username}"

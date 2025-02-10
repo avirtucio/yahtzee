@@ -47,17 +47,46 @@
 
         <script>
             document.getElementById("join_game_input").addEventListener('click', makeRequest);
-            function makeRequest(event){
+            async function makeRequest(event){
+                game_name = document.getElementById('game_name_input').value;
+                username = document.getElementById('username').value;
+                game_list = document.getElementById('games_list')
                 
-                link = "http://127.0.0.1:8080/games/join";
-                req = new XMLHttpRequest();
+                // const api_key = 'fbd71b6841d2b3002b8bb7c650ef9e8b';
+                // const link = 'http://127.0.0.1:8080/games/join';
+               
+                try {
+                    const response = await fetch('/games/join', {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        body: JSON.stringify({
+                            game_name: game_name,
+                            username: username
+                        })
+                    });
 
-                req.onload = (e) => {
-                    console.log(req.response); 
-                };
+                    if (!response.ok) {
+                        throw new Error(`Response status: ${response.status}`);
+                    }
 
-                req.open("POST", link);
-                req.send();
+                    const json = await response.json();
+                    json.forEach(function(game_name){
+                        newGame = document.createElement('li');
+                        newGame.innerHTML = `
+                            <a href="/games/${game_name}/${username}">${game_name}</a> 
+                            <a href="/games/delete/${game_name}/${username}">Delete</a>
+                            `; 
+                        game_list.appendChild(newGame);
+                    })
+
+                    document.getElementById('game_name_input').value = '';
+
+                    console.log(json);
+                } catch (error) {
+                    console.error(error.message);
+                }
                 console.log("hello")
             }
         </script>
