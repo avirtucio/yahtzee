@@ -34,7 +34,7 @@
                 <input type="submit" id="create_submit" value="Create">
                 <input type="hidden" id="username" name="username" value="{{username}}">
             </form>
-            <button type="button" id="join_game_input">Join</button>
+            <input type="button" id="join_submit" value="Join">
         </section>
 
         <section id="high-scores">
@@ -46,14 +46,11 @@
         </section>
 
         <script>
-            document.getElementById("join_game_input").addEventListener('click', makeRequest);
+            document.getElementById("join_submit").addEventListener('click', makeRequest);
             async function makeRequest(event){
                 game_name = document.getElementById('game_name_input').value;
                 username = document.getElementById('username').value;
                 game_list = document.getElementById('games_list')
-                
-                // const api_key = 'fbd71b6841d2b3002b8bb7c650ef9e8b';
-                // const link = 'http://127.0.0.1:8080/games/join';
                
                 try {
                     const response = await fetch('/games/join', {
@@ -72,6 +69,9 @@
                     }
 
                     const json = await response.json();
+
+                    console.log(json['message'])
+                    document.getElementById("feedback").innerText = json["message"]
                     json.forEach(function(game_name){
                         newGame = document.createElement('li');
                         newGame.innerHTML = `
@@ -83,11 +83,11 @@
 
                     document.getElementById('game_name_input').value = '';
 
-                    console.log(json);
+                    
                 } catch (error) {
                     console.error(error.message);
                 }
-                console.log("hello")
+                
             }
         </script>
         <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>

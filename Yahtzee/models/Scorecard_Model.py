@@ -258,7 +258,7 @@ class Scorecard:
     def to_dict(self, card_tuple):
         game_dict={}
         if card_tuple:
-            print("scorecard model, to_dict, card_tuple[3]:", card_tuple[3])
+            #print("scorecard model, to_dict, card_tuple[3]:", card_tuple[3])
             game_dict["id"]=card_tuple[0]
             game_dict["game_id"]=card_tuple[1]
             game_dict["user_id"]=card_tuple[2]

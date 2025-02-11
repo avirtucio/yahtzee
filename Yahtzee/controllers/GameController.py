@@ -54,11 +54,16 @@ def join_game():
     username = request.json.get("username")
     game_name = request.json.get("game_name")
     print("game_controller, join_game, username and game_name:", username, game_name)
+    all_users_games_old = Scorecard.get_all_user_game_names(username)["data"]
+
+    print("game controller, join game, check if game exists", Game.exists(game_name=game_name))
     
-    if (User.exists(username=username)["status"] == "error"):
+    if (User.exists(username=username)["data"] == False):
+        print("game controller, join game, username does not exist")
         return jsonify({'status': 'error', 'message': 'username does not exist'})
         # return render_template("user_games.html", feedback="user does not exist")
-    elif (Game.exists(game_name=game_name)["status"] == "error"):
+    elif (Game.exists(game_name=game_name)["data"] == False):
+        print("game controller, join game, game does not exist")
         return jsonify({'status': 'error', 'message': 'game does not exist'})
         # return render_template("user_games.html", feedback="game does not exist")
     else:
@@ -66,7 +71,11 @@ def join_game():
         game_id = str(Game.get(game_name=game_name)["data"]["id"])
         new_scorecard = Scorecard.create(game_id, user_id, f"{game_name}|{username}")
         all_users_games = Scorecard.get_all_user_game_names(username)["data"]
-        return jsonify(all_users_games)
+        all_new_games = set(all_users_games).symmetric_difference(set(all_users_games_old))
+        # print("game controller, join game, all users games old", all_users_games_old)
+        # print("game controller, join game, all users games", all_users_games)
+        # print("game controller, join game, all new games", all_new_games)
+        return jsonify(list(all_new_games))
         # return render_template("user_games.html", username=username, game_name=game_name, all_users_games=all_users_games)
 
 def delete_game(game_name, username):
