@@ -70,7 +70,7 @@
 
                     const json = await response.json();
 
-                    console.log(json['message'])
+                    console.log(json)
                     document.getElementById("feedback").innerText = json["message"]
                     json.forEach(function(game_name){
                         newGame = document.createElement('li');
@@ -78,6 +78,7 @@
                             <a href="/games/${game_name}/${username}">${game_name}</a> 
                             <a href="/games/delete/${game_name}/${username}">Delete</a>
                             `; 
+                        console.log(newGame)
                         game_list.appendChild(newGame);
                     })
 

@@ -98,3 +98,7 @@ def delete_game(game_name, username):
         all_game_scores = {game_name: score for game_name, score in sorted(all_game_scores.items(), key=lambda item: item[1], reverse=True)}
     
     return render_template("user_games.html", username=username, all_users_games=all_users_games, all_game_scores=all_game_scores)
+
+def gameDataToNodeServer(game_name):
+    all_game_scorecards = Scorecard.get_all_game_scorecards(game_name)
+    return jsonify(all_game_scorecards)

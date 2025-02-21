@@ -1,0 +1,25 @@
+@import url(https://fonts.googleapis.com);
+@import url(https://fonts.gstatic.com);
+@import url(https://fonts.googleapis.com/css2?family=Protest+Guerrilla&display=swap);
+
+body {
+    background-color: #fcba03;
+    font-family: "Protest Guerrilla", sans-serif;
+    font-weight: 400;
+    font-style: normal;
+}
+
+.reserved {
+    border-style: solid;
+    border-color: blue;
+}
+
+.good {
+    border-style: solid;
+    border-color: green;
+}
+
+.bad {
+    border-style: solid;
+    border-color: red;
+}
