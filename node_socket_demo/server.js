@@ -35,6 +35,9 @@ io.on('connection', function(socket){
     });
   });
 
+  socket.on('valid_score_entry', function(data){
+    
+  });
 
  
 });
