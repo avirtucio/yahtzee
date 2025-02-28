@@ -101,4 +101,5 @@ def delete_game(game_name, username):
 
 def gameDataToNodeServer(game_name):
     all_game_scorecards = Scorecard.get_all_game_scorecards(game_name)
+    print(all_game_scorecards)
     return jsonify(all_game_scorecards)

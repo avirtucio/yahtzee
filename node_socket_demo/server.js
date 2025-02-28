@@ -42,9 +42,35 @@ io.on('connection', function(socket){
  
 });
 
-app.get('/games/:game_name/:username', function(request, response) {
+app.get('/games/:game_name/:username', async function(request, response) {
   let username = request.params.username;
   let game_name = request.params.game_name;
+
+  
+    try {
+      const response = await fetch('http://127.0.0.1:8080/gameDataToNodeServer/<game_name>', {
+          method: 'GET',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+              game_name: game_name
+          })
+      });
+
+      if (!response.ok) {
+          throw new Error(`Response status: ${response.status}`);
+      }
+
+      const json = await response.json();
+
+      console.log(json)
+      
+      
+    } catch (error) {
+        console.error(error.message);
+    }
+  
 
   response.status(200);
   response.setHeader('Content-Type', 'text/html')
