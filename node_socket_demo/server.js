@@ -43,13 +43,15 @@ io.on('connection', function(socket){
 });
 
 app.get('/games/:game_name/:username', async function(request, response) {
+  // console.log("top of async function")
   let username = request.params.username;
   let game_name = request.params.game_name;
-
+  let all_game_scorecards;
+  // console.log("username and game_name from request params", username, game_name)
   
     try {
-      const response = await fetch('http://127.0.0.1:8080/gameDataToNodeServer/<game_name>', {
-          method: 'GET',
+      const response = await fetch(`http://127.0.0.1:8080/gameDataToNodeServer/${game_name}`, {
+          method: 'POST',
           headers: {
               'Content-Type': 'application/json',
           },
@@ -63,20 +65,21 @@ app.get('/games/:game_name/:username', async function(request, response) {
       }
 
       const json = await response.json();
-
-      console.log(json)
-      
+      // console.log(json)
+      all_game_scorecards = json;
       
     } catch (error) {
         console.error(error.message);
     }
-  
 
+    console.log("json out of try stuff", all_game_scorecards)
+  
   response.status(200);
   response.setHeader('Content-Type', 'text/html')
   response.render("index", {
     username: username,
-    game_name: game_name
+    game_name: game_name, 
+    all_game_scorecards: all_game_scorecards
   });
 });
 

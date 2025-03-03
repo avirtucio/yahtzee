@@ -100,6 +100,8 @@ def delete_game(game_name, username):
     return render_template("user_games.html", username=username, all_users_games=all_users_games, all_game_scores=all_game_scores)
 
 def gameDataToNodeServer(game_name):
+    # print("gamedatatonodeserver was called")
+    # print(game_name)
     all_game_scorecards = Scorecard.get_all_game_scorecards(game_name)
     print(all_game_scorecards)
-    return jsonify(all_game_scorecards)
+    return jsonify(all_game_scorecards["data"])
