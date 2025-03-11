@@ -38,12 +38,7 @@
   <section id="feedback"></section>
 
   <section id="scorecard">
-    <table id="all_scorecards">
-      <% for (let i = 0; i < all_game_scorecards.length; i++) { %>
-        <%= <tr>
-        </tr> %>
-      <% } %>
-    </table>
+    
     <table>
       <tr>
         <th>UPPER SECTION</th>
@@ -53,7 +48,9 @@
       <tr>
         <td>one <img src="/img/one.svg" width="20" /> =1</td>
         <td>Count and Add Only one</td>
-        <td><input type="text" class="upper category" id="one_input" size="3"></td>
+        <% for (let i=0; i<all_game_scorecards.length; i++){ %>
+          <% <td><input type="text" class="upper category" id="one_input" size="3"></td> %>
+        <% } %>
       </tr>
       <tr>
         <td>two <img src="/img/two.svg" width="20" /> =2</td>
