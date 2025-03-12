@@ -173,10 +173,10 @@ class Gamecard{
     * 
     * @return {Number} an integer value representing the curent game score
     */
-    get_score(){
-        this.update_scores()
-        if (parseInt(document.getElementById("grand_total").textContent)){
-            return parseInt(document.getElementById("grand_total").textContent)
+    get_score(username){
+        this.update_scores(username)
+        if (parseInt(document.getElementById("grand_total_"+username).textContent)){
+            return parseInt(document.getElementById("grand_total_"+username).textContent)
         } else {
             return 0
         }
@@ -185,8 +185,8 @@ class Gamecard{
     /**
      * Updates all score elements for a scorecard
     */
-    update_scores(){
-       document.getElementById("upper_score").innerHTML = Array.from(document.getElementsByClassName("upper")).reduce(function(acc, el, index){
+    update_scores(username){
+       document.getElementById("upper_score_"+username).innerHTML = Array.from(document.getElementsByClassName("upper_"+username)).reduce(function(acc, el, index){
         if (index <= 6){
             if (el.hasAttribute("disabled") === true){
                 return acc + parseInt(el.value)
@@ -198,20 +198,20 @@ class Gamecard{
         }
        }, 0);
 
-       if (document.getElementById("upper_score").innerHTML > 63){
-        document.getElementById("upper_bonus").innerHTML = 35;
+       if (document.getElementById("upper_score_"+username).innerHTML > 63){
+        document.getElementById("upper_bonus_"+username).innerHTML = 35;
        } 
     //    else {
     //     document.getElementById("upper_bonus").innerHTML = 0;
     //    }
-       if (parseInt(document.getElementById("upper_bonus").innerHTML)){
-        document.getElementById("upper_total").innerHTML = parseInt(document.getElementById("upper_score").innerHTML) + parseInt(document.getElementById("upper_bonus").innerHTML);
+       if (parseInt(document.getElementById("upper_bonus_"+username).innerHTML)){
+        document.getElementById("upper_total_"+username).innerHTML = parseInt(document.getElementById("upper_score_"+username).innerHTML) + parseInt(document.getElementById("upper_bonus_"+username).innerHTML);
        } else {
-        document.getElementById("upper_total").innerHTML = parseInt(document.getElementById("upper_score").innerHTML)
+        document.getElementById("upper_total_"+username).innerHTML = parseInt(document.getElementById("upper_score_"+username).innerHTML)
        }
        
 
-       document.getElementById("lower_score").innerHTML = Array.from(document.getElementsByClassName("lower")).reduce(function(acc, el, index){
+       document.getElementById("lower_score_"+username).innerHTML = Array.from(document.getElementsByClassName("lower_"+username)).reduce(function(acc, el, index){
         if (index <= 6){
             if (el.hasAttribute("disabled") == true){
                 return acc + parseInt(el.value)
@@ -223,9 +223,9 @@ class Gamecard{
         }
        }, 0);
 
-       document.getElementById("upper_total_lower").innerHTML = document.getElementById("upper_total").innerHTML;
+       document.getElementById("upper_total_lower_"+username).innerHTML = document.getElementById("upper_total_"+username).innerHTML;
 
-       document.getElementById("grand_total").innerHTML = parseInt(document.getElementById("upper_total").innerHTML) + parseInt(document.getElementById("lower_score").innerHTML);
+       document.getElementById("grand_total_"+username).innerHTML = parseInt(document.getElementById("upper_total_"+username).innerHTML) + parseInt(document.getElementById("lower_score_"+username).innerHTML);
        
        //document.getElementById("grand_total").innerText = document.getElementById("grand_total").value;
     }
@@ -255,13 +255,16 @@ class Gamecard{
      *
      * @param {Object} gameObject the object version of the scorecard
     */
-    load_scorecard(score_info){
+    load_scorecard(score_info, username){
        let scorecard = score_info;
-       this.dice.rolls_remaining_element = scorecard["rolls_remaining"];
-       document.getElementById("rolls_remaining").innerText = scorecard["rolls_remaining"]
+       this.dice.rolls_remaining_element = scorecard["dice_rolls"];
+       document.getElementById("rolls_remaining").innerText = scorecard["dice_rolls"];
+       // user should only see dice rolls of current roller
+    //    this.dice.rolls_remaining_element = scorecard["rolls_remaining"];
+    //    document.getElementById("rolls_remaining").innerText = scorecard["rolls_remaining"]
     
        for (const [key] of Object.entries(scorecard["upper"])){
-        let category_id = key+"_input"
+        let category_id = key+"_input"+username
         if(scorecard["upper"][key] < 0){
             document.getElementById(category_id).value = '';
             document.getElementById(category_id).disabled = false;

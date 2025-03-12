@@ -102,6 +102,9 @@ def delete_game(game_name, username):
 def gameDataToNodeServer(game_name):
     # print("gamedatatonodeserver was called")
     # print(game_name)
+    all_game_scorecards_data = {}
     all_game_scorecards = Scorecard.get_all_game_scorecards(game_name)
-    print(all_game_scorecards)
-    return jsonify(all_game_scorecards["data"])
+    for scorecard in all_game_scorecards["data"]:
+        all_game_scorecards_data[scorecard["name"].split("|")[1]] = scorecard
+    print(all_game_scorecards_data)
+    return jsonify(all_game_scorecards_data)

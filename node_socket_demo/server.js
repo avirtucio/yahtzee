@@ -72,7 +72,12 @@ app.get('/games/:game_name/:username', async function(request, response) {
         console.error(error.message);
     }
 
-    console.log("json out of try stuff", all_game_scorecards)
+    // console.log("json out of try stuff", all_game_scorecards)
+    for (const [key, value] of Object.entries(all_game_scorecards)) {
+      console.log("for loop")
+      console.log(key);
+      console.log(value)
+    }
   
   response.status(200);
   response.setHeader('Content-Type', 'text/html')
