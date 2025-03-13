@@ -205,6 +205,8 @@
   <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.0.0/dist/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl" crossorigin="anonymous"></script>
 
   <script>
+    // import Dice from '../static/js/Dice.js';
+    // import Gamecard from '../static/js//Gamecard.js';
     let socket = io.connect('/');//the default namespace
     socket.emit('game_connection', {username:'<%=username%>', game_name:'<%=game_name%>'});
 
@@ -220,12 +222,23 @@
            text = data.username+text;
 
         chat_display_element.value =  chat_display_element.value+text;
+
+        for (const [key, value] of Object.entries(all_game_scorecards)) {
+          console.log("loading "+key+" scorecard")
+          gamecard.load_scorecard(value, key)
+        }
+
     });
 
     socket.on('connection', function(data) {
         console.log("New player has connected to Yahtzee!")
         let total_players_element = document.getElementById('total_players');
         total_players_element.innerText = data.num_total_connections;
+
+        for (const [key, value] of Object.entries(all_game_scorecards)) {
+          console.log("loading "+key+" scorecard")
+          gamecard.load_scorecard(value, key)
+        }
     });
 
     socket.on('chat', function(data) {

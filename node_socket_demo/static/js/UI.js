@@ -92,12 +92,19 @@ function enter_score_handler(event){
         value = parseInt(document.getElementById(event.target.id).value)
     }
     let category = event.target.id.split("_")
+    let username = category[category.length-1]
+    category.pop()
     category.pop()
     category = category.join("_")
     if (gamecard.is_valid_score(category, value) === true){
         display_feedback("good", "score input valid")
         document.getElementById(event.target.id).disabled = true;
         dice.reset();
+
+        Socket.emit('valid_score_entry', {
+            username: username,
+
+        })
     } else {
         display_feedback('bad', 'score input invalid')
         document.getElementById(event.target.id).disabled = false;
