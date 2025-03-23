@@ -1,6 +1,7 @@
 console.log("UI.js connected")
 import Dice from './Dice.js';
 import Gamecard from './Gamecard.js';
+let socket = io.connect('/');//the default namespace
 
 //-------Dice Setup--------//
 let roll_button = document.getElementById('roll_button'); 
@@ -95,13 +96,16 @@ function enter_score_handler(event){
     let username = category[category.length-1]
     category.pop()
     category.pop()
+    // console.log(category)
     category = category.join("_")
+    // category = category.slice(0,(category.length-1))
+    console.log("UI.js, enter_score_handler, category and username,", category, username)
     if (gamecard.is_valid_score(category, value) === true){
         display_feedback("good", "score input valid")
         document.getElementById(event.target.id).disabled = true;
         dice.reset();
 
-        Socket.emit('valid_score_entry', {
+        socket.emit('valid_score_entry', {
             username: username,
 
         })
@@ -110,7 +114,7 @@ function enter_score_handler(event){
         document.getElementById(event.target.id).disabled = false;
     }
 
-    gamecard.update_scores()
+    gamecard.update_scores(username)
     if (gamecard.is_finished() === true){
         display_feedback("good", "game is finished")
     }

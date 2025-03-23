@@ -46,45 +46,45 @@
         <th>#1</th>
       </tr>
       <tr>
-        <td>one <img src="/img/one.svg" width="20" /> =1</td>
+        <td>one <img src="/img/ones.svg" width="20" /> =1</td>
         <td>Count and Add Only one</td>
           <% for (const [key, value] of Object.entries(all_game_scorecards)) { %>
-            <td><input type="text" class="<%=`upper_${key}`%> category" id=<%=`one_input_${key}`%> size="3"></td>
+            <td><input type="text" class="<%=`upper_${key}`%> category" id=<%=`ones_input_${key}`%> size="3"></td>
           <% } %>
       </tr>
       <tr>
-        <td>two <img src="/img/two.svg" width="20" /> =2</td>
+        <td>two <img src="/img/twos.svg" width="20" /> =2</td>
         <td>Count and Add Only two</td>
         <% for (const [key, value] of Object.entries(all_game_scorecards)) { %>
-          <td><input type="text" class="<%=`upper_${key}`%> category" id=<%=`two_input_${key}`%> size="3"></td>
+          <td><input type="text" class="<%=`upper_${key}`%> category" id=<%=`twos_input_${key}`%> size="3"></td>
         <% } %>
       </tr>
       <tr>
-        <td>three <img src="/img/three.svg" width="20" /> =3</td>
+        <td>three <img src="/img/threes.svg" width="20" /> =3</td>
         <td>Count and Add Only three</td>
         <% for (const [key, value] of Object.entries(all_game_scorecards)) { %>
-          <td><input type="text" class="<%=`upper_${key}`%> category" id=<%=`three_input_${key}`%> size="3"></td>
+          <td><input type="text" class="<%=`upper_${key}`%> category" id=<%=`threes_input_${key}`%> size="3"></td>
         <% } %>
       </tr>
       <tr>
-        <td>four <img src="/img/four.svg" width="20" /> =4</td>
+        <td>four <img src="/img/fours.svg" width="20" /> =4</td>
         <td>Count and Add Only four</td>
         <% for (const [key, value] of Object.entries(all_game_scorecards)) { %>
-          <td><input type="text" class="<%=`upper_${key}`%> category" id=<%=`four_input_${key}`%> size="3"></td>
+          <td><input type="text" class="<%=`upper_${key}`%> category" id=<%=`fours_input_${key}`%> size="3"></td>
         <% } %>
       </tr>
       <tr>
-        <td>five <img src="/img/five.svg" width="20" /> =5</td>
+        <td>five <img src="/img/fives.svg" width="20" /> =5</td>
         <td>Count and Add Only five</td>
         <% for (const [key, value] of Object.entries(all_game_scorecards)) { %>
-          <td><input type="text" class="<%=`upper_${key}`%> category" id=<%=`five_input_${key}`%> size="3"></td>
+          <td><input type="text" class="<%=`upper_${key}`%> category" id=<%=`fives_input_${key}`%> size="3"></td>
         <% } %>
       </tr>
       <tr>
-        <td>six <img src="/img/six.svg" width="20" /> =6</td>
+        <td>six <img src="/img/sixes.svg" width="20" /> =6</td>
         <td>Count and Add Only six</td>
         <% for (const [key, value] of Object.entries(all_game_scorecards)) { %>
-          <td><input type="text" class="<%=`upper_${key}`%> category" id=<%=`six_input_${key}`%> size="3"></td>
+          <td><input type="text" class="<%=`upper_${key}`%> category" id=<%=`sixes_input_${key}`%> size="3"></td>
         <% } %>
       </tr>
       <tr>
@@ -235,10 +235,8 @@
         let total_players_element = document.getElementById('total_players');
         total_players_element.innerText = data.num_total_connections;
 
-        for (const [key, value] of Object.entries(all_game_scorecards)) {
-          console.log("loading "+key+" scorecard")
-          gamecard.load_scorecard(value, key)
-        }
+        console.log("index, socket.on connection, trying to load justingohde scorecard")
+        gamecard.load_scorecard({"dice_rolls": 3, "upper": {"ones": 6, "twos": 12, "threes": -1, "fours": -1, "fives": -1, "sixes": -1}, "lower": {"three_of_a_kind": -1, "four_of_a_kind": -1, "full_house": 25, "small_straight": 30, "large_straight": 40, "yahtzee": 50, "chance": -1}}, "justingohde")
     });
 
     socket.on('chat', function(data) {

@@ -186,6 +186,7 @@ class Gamecard{
      * Updates all score elements for a scorecard
     */
     update_scores(username){
+       console.log("gamecard.js, update_scores, upper_score element id,", "upper_score_"+username)
        document.getElementById("upper_score_"+username).innerHTML = Array.from(document.getElementsByClassName("upper_"+username)).reduce(function(acc, el, index){
         if (index <= 6){
             if (el.hasAttribute("disabled") === true){
@@ -264,7 +265,8 @@ class Gamecard{
     //    document.getElementById("rolls_remaining").innerText = scorecard["rolls_remaining"]
     
        for (const [key] of Object.entries(scorecard["upper"])){
-        let category_id = key+"_input"+username
+        let category_id = key+"_input_"+username
+        // console.log("gamecard.js, load_scorecard, category_id,", category_id)
         if(scorecard["upper"][key] < 0){
             document.getElementById(category_id).value = '';
             document.getElementById(category_id).disabled = false;
@@ -275,7 +277,7 @@ class Gamecard{
        }
 
        for (const [key] of Object.entries(scorecard["lower"])){
-        let category_id = key+"_input"
+        let category_id = key+"_input_"+username
         if(scorecard["lower"][key] < 0){
             document.getElementById(category_id).value = '';
             document.getElementById(category_id).disabled = false;
@@ -285,7 +287,7 @@ class Gamecard{
         }
        }
        
-       this.update_scores()
+       this.update_scores(username)
        return scorecard
     }
 

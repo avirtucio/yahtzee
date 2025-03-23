@@ -29,7 +29,7 @@ app.add_url_rule('/games/delete/<game_name>/<username>', view_func=GameControlle
 app.add_url_rule('/gameDataToNodeServer/<game_name>', view_func=GameController.gameDataToNodeServer, methods = ['POST'])
 
 # #scorecard router
-# app.add_url_rule('/scorecards/<scorecard_id>', view_func=ScorecardController.update_scorecard, methods = ['POST'])
+app.add_url_rule('/scorecards/<scorecard_id>', view_func=ScorecardController.update_scorecard, methods = ['POST'])
 
 #user router
 app.add_url_rule('/users', view_func=UserController.user, methods = ['GET', 'POST'])

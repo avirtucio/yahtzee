@@ -3,7 +3,7 @@ class Dice{
     constructor(dice_elements, rolls_remaining_element){
         this.rolls_remaining_element= rolls_remaining_element;
         this.dice_elements= dice_elements; //array of images//
-        this.photo_names=["blank", "one", "two", "three", "four", "five", "six"]
+        this.photo_names=["blank", "ones", "twos", "threes", "fours", "fives", "sixes"]
 
         this.dice_values = [0,0,0,0,0]
     }

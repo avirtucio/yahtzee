@@ -36,6 +36,7 @@ io.on('connection', function(socket){
   });
 
   socket.on('valid_score_entry', function(data){
+    console.log("valid score entry for "+ data.username)
     
   });
 
@@ -73,11 +74,11 @@ app.get('/games/:game_name/:username', async function(request, response) {
     }
 
     // console.log("json out of try stuff", all_game_scorecards)
-    for (const [key, value] of Object.entries(all_game_scorecards)) {
-      console.log("for loop")
-      console.log(key);
-      console.log(value)
-    }
+    // for (const [key, value] of Object.entries(all_game_scorecards)) {
+    //   console.log("for loop")
+    //   console.log(key);
+    //   console.log(value)
+    // }
   
   response.status(200);
   response.setHeader('Content-Type', 'text/html')
