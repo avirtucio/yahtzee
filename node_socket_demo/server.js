@@ -35,12 +35,34 @@ io.on('connection', function(socket){
     });
   });
 
-  socket.on('valid_score_entry', function(data){
+  socket.on('valid_score_entry', async function(data){
     console.log("valid score entry for "+ data.username)
-    
+    console.log(data.username+"'s categories", data.user_categories)
+    console.log(data.game_name)
+
+    scorecard_name = data.game_name+"|"+data.username
+
+    try {
+      const response = await fetch(`http://127.0.0.1:8080/scorecards/${scorecard_name}`, {
+          method: 'POST',
+          headers: {
+              'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+              categories: data.user_categories
+          })
+      });
+
+      if (!response.ok) {
+          throw new Error(`Response status: ${response.status}`);
+      }
+      
+    } catch (error) {
+        console.error(error.message);
+    }
+
   });
 
- 
 });
 
 app.get('/games/:game_name/:username', async function(request, response) {

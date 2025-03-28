@@ -105,10 +105,53 @@ function enter_score_handler(event){
         document.getElementById(event.target.id).disabled = true;
         dice.reset();
 
+        let user_upper_categories = Array.from(document.getElementsByClassName("upper_"+username)).slice(0,6)
+        let user_upper_values = user_upper_categories.map(function(score_element, index){
+            if (parseInt(score_element.value) > -1){
+                return score_element.value
+            } else {
+                return "-1"
+            }
+        })
+        let user_lower_categories = Array.from(document.getElementsByClassName("lower_"+username)).slice(0,7)
+        let user_lower_values = user_lower_categories.map(function(score_element, index){
+            if (parseInt(score_element.value) > -1){
+                return score_element.value
+            } else {
+                return "-1"
+            }
+        })
+        let user_dice_rolls = rolls_remainging_element
+        // console.log("UI.js, valid score entry, user_upper_values,", user_upper_values)
+        // console.log("UI.js, valid score entry, user_upper_categories, 4s", user_upper_categories[3].value)
+        // console.log("UI.js, valid score entry, user_lower_categories,", user_lower_categories[5].value)
+        let user_categories = {
+            "dice_rolls":user_dice_rolls,
+            "upper":{
+                "ones":user_upper_values[0],
+                "twos":user_upper_values[1],
+                "threes":user_upper_values[2],
+                "fours":user_upper_values[3],
+                "fives":user_upper_values[4],
+                "sixes":user_upper_values[5]
+            },
+            "lower":{
+             "three_of_a_kind":user_lower_values[0],
+                "four_of_a_kind":user_lower_values[1],
+                "full_house":user_lower_values[2],
+                "small_straight":user_lower_values[3],
+                "large_straight":user_lower_values[4],
+                "yahtzee":user_lower_values[5],
+                "chance":user_lower_values[6]
+            }
+        }
+
         socket.emit('valid_score_entry', {
             username: username,
-
+            game_name: document.getElementById("game_name_info").innerHTML,
+            user_categories: user_categories
         })
+
     } else {
         display_feedback('bad', 'score input invalid')
         document.getElementById(event.target.id).disabled = false;
