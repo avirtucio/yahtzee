@@ -223,9 +223,28 @@
 
         chat_display_element.value =  chat_display_element.value+text;
 
-        for (const [key, value] of Object.entries(all_game_scorecards)) {
+        // <% for (const [key, value] of Object.entries(all_game_scorecards)) { %>
+        //   console.log("<%=key%>")
+        //   console.log(Array.from(value))
+        //   // <% for (const [key1, value1] of Object.entries(value)){ %>
+        //   //   if ("<%=key1%>" == "categories"){
+        //   //     // gamecard.load_scorecard(<%=value1%>, "<%=key%>")
+        //   //     <% for (const [key, value2] of Object.entries(value1)){ %>
+        //   //       console.log("<%=key%>","<%=value2%>")
+        //   //     <% } %>
+        //   //     // console.log("<%=value1%>")
+        //   //   } 
+        //   // <% } %>
+        //   // console.log(Object.values(<%=value%>))
+        // <% } %>
+
+        let game_scorecards = <%- JSON.stringify(all_game_scorecards) %>
+        // console.log("index.ejs, game_scorecards,", game_scorecards)
+
+        for (const [key, value] of Object.entries(game_scorecards)) {
+          console.log(key, value["categories"])
           console.log("loading "+key+" scorecard")
-          gamecard.load_scorecard(value, key)
+          gamecard.load_scorecard(value["categories"], key)
         }
 
     });
@@ -248,6 +267,22 @@
 
         chat_display_element.value+=text;
     });
+
+    socket.on('valid_score_entry', function(data){
+      let chat_display_element = document.getElementById('chat_display');
+      let text = data.message+"\n";
+      chat_display_element.value+=text;
+
+      let game_scorecards = data.all_game_scorecards
+      console.log("index.ejs, valid_score_entry, game_scorecards,", data.all_game_scorecards)
+        // console.log("index.ejs, game_scorecards,", game_scorecards)
+
+        for (const [key, value] of Object.entries(game_scorecards)) {
+          console.log(key, value["categories"])
+          console.log("loading "+key+" scorecard")
+          gamecard.load_scorecard(value["categories"], key)
+        }
+    })
 
     document.getElementById("chat_button").addEventListener('click', function(){
       let message_data = document.getElementById("chat_message").value;
