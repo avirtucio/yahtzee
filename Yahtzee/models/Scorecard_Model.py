@@ -42,7 +42,7 @@ class Scorecard:
             cursor = db_connection.cursor()
             card_id = random.randint(0, self.max_safe_id)
             categories_dict = {
-                "dice_rolls":0,
+                "dice_rolls":3,
                 "upper":{
                     "ones":-1,
                     "twos":-1,

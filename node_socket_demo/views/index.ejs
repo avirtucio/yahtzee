@@ -254,8 +254,7 @@
         let total_players_element = document.getElementById('total_players');
         total_players_element.innerText = data.num_total_connections;
 
-        console.log("index, socket.on connection, trying to load justingohde scorecard")
-        gamecard.load_scorecard({"dice_rolls": 3, "upper": {"ones": 6, "twos": 12, "threes": -1, "fours": -1, "fives": -1, "sixes": -1}, "lower": {"three_of_a_kind": -1, "four_of_a_kind": -1, "full_house": 25, "small_straight": 30, "large_straight": 40, "yahtzee": 50, "chance": -1}}, "justingohde")
+        
     });
 
     socket.on('chat', function(data) {

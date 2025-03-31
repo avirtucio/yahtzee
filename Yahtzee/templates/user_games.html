@@ -75,7 +75,7 @@
                     json.forEach(function(game_name){
                         newGame = document.createElement('li');
                         newGame.innerHTML = `
-                            <a href="/games/${game_name}/${username}">${game_name}</a> 
+                            <a href="http://127.0.0.1:3000/games/${game_name}/${username}">${game_name}</a> 
                             <a href="/games/delete/${game_name}/${username}">Delete</a>
                             `; 
                         console.log(newGame)
