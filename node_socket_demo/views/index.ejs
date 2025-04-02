@@ -43,7 +43,9 @@
       <tr>
         <th>UPPER SECTION</th>
         <th>HOW TO SCORE</th>
-        <th>#1</th>
+        <% for (const [key, value] of Object.entries(all_game_scorecards)) { %>
+          <th><%=key%></th>
+        <% } %>
       </tr>
       <tr>
         <td>one <img src="/img/ones.svg" width="20" /> =1</td>

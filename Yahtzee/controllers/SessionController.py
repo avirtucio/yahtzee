@@ -27,7 +27,7 @@ def login():
                     all_game_scores[game_name]=game_score
 
                     all_game_scores = {game_name: score for game_name, score in sorted(all_game_scores.items(), key=lambda item: item[1], reverse=True)}
-                return render_template('user_games.html', username=username, all_users_games=all_users_games, all_game_scores=all_game_scores)
+                return render_template('user_games.html', username=username, all_users_games=all_users_games, all_game_scores=all_game_scores, context="get user")
             else:
                 return render_template('login.html', error = "incorrect password")
         else:
