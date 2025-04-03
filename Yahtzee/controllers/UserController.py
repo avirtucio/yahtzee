@@ -96,4 +96,4 @@ def delete_user(username):
         User.remove(username)
         return render_template('login.html', username=username)
     else:
-        return render_template('user_details.html', feedback="user does not exist")
+        return render_template('user_details.html', feedback="user does not exist", context="get user")

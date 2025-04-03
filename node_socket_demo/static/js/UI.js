@@ -110,7 +110,7 @@ function enter_score_handler(event){
             if (parseInt(score_element.value) > -1){
                 return score_element.value
             } else {
-                return "-1"
+                return -1
             }
         })
         let user_lower_categories = Array.from(document.getElementsByClassName("lower_"+username)).slice(0,7)
@@ -118,7 +118,7 @@ function enter_score_handler(event){
             if (parseInt(score_element.value) > -1){
                 return score_element.value
             } else {
-                return "-1"
+                return -1
             }
         })
         let user_dice_rolls = rolls_remainging_element
